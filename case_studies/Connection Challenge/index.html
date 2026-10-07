@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Backpropagation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#EDF3FA;--bg-top:#FDF1E9;--panel:#FFFFFF;--line:#D9E5F2;
+  --track:#B7CBDF;--wash:#F3F8FD;--teal:#4A9BD1;--teal-dim:#8FCBEF;
+  --blue-dark:#2B6FA3;--amber:#EA8C36;--orange-dark:#C96F1F;
+  --ink:#1F2E37;--muted:#54666D;--faint:#93A5AB;--danger:#D9714F;
+  --success-bg:#DCEAD8;--success-text:#274B26;--success-border:#4B7A4A;
+  --error-bg:#FBE1DC;--error-text:#8A3420;--error-border:#D9714F;
+  --banner:#22496B;--shadow-card:0 8px 24px rgba(23,50,77,.10);
+  --shadow-lift:0 10px 30px rgba(23,50,77,.12);
+  --shadow-btn:0 6px 18px rgba(43,111,163,.28);
+  --font-display:'Poppins',sans-serif;--font-body:'Inter',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:linear-gradient(180deg,var(--bg-top) 0%,var(--bg) 420px,var(--bg) 100%);
+color:var(--ink);font-family:var(--font-body);min-height:100vh}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-.01em;color:var(--ink)}
+p{line-height:1.6;color:var(--muted);margin:0}
+button{font-family:var(--font-display);cursor:pointer;border:none;outline:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.btn-primary{background:linear-gradient(135deg,var(--teal-dim),var(--blue-dark));color:#fff;font-weight:600;font-size:14px;padding:13px 26px;border-radius:999px;box-shadow:var(--shadow-btn);transition:.15s}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(43,111,163,.36)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-danger{background:linear-gradient(135deg,#E39A7D,var(--danger));color:#fff;font-weight:600;font-size:14px;padding:13px 26px;border-radius:999px}
+.hint-updown{font-weight:700;white-space:nowrap;font-size:12px}.hint-up{color:var(--blue-dark)}.hint-down{color:var(--orange-dark)}.hint-stuck{color:var(--muted)}
+.btn-ghost{background:transparent;color:var(--teal);font-size:13px;font-weight:600;padding:9px 18px;border:1.5px solid var(--teal);border-radius:999px}
+.btn-ghost:hover,.btn-ghost.on{background:rgba(74,155,209,.08)}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 20px;gap:14px;flex-wrap:wrap}
+.back-btn{background:transparent;border:1.5px solid var(--line);color:var(--muted);font-family:var(--font-body);
+font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:7px 14px;border-radius:999px;cursor:pointer}
+.back-btn:hover{border-color:var(--error-border);color:var(--error-text)}
+.back-btn[disabled]{visibility:hidden}
+.progress{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;flex:1}
+.progress-step{display:flex;align-items:center;gap:5px;font-weight:600;font-size:9px;letter-spacing:.02em;text-transform:uppercase}
+.progress-step .num{width:18px;height:18px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted)}
+.progress-step.done .num{background:var(--teal);border-color:var(--teal);color:#fff}
+.progress-step.current .num{background:linear-gradient(135deg,var(--teal-dim),var(--blue-dark));border-color:var(--blue-dark);color:#fff}
+.progress-step.current .label{color:var(--blue-dark)}
+.progress-step .label{color:var(--muted)}
+.progress-line{width:14px;height:1px;background:var(--line)}
+.screen{display:none;min-height:calc(100vh - 56px);width:100%;align-items:center;justify-content:center;padding:40px 20px}
+.screen.active{display:flex}
+.container{width:100%;max-width:920px;margin:0 auto;min-width:0}
+.eyebrow{font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:12px}
+.guide-note{background:var(--wash);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:14px 18px;margin:0 0 16px;text-align:left}
+.guide-note p{color:var(--ink);font-size:13.5px}
+.guide-note ul{margin:6px 0 0;padding-left:18px}
+.guide-note li{color:var(--ink);font-size:13.5px;line-height:1.6;margin-bottom:4px}
+.guide-kicker{display:inline-block;font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+.edit-tag{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:10px}
+.problem-card,.setup-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:44px 40px;box-shadow:var(--shadow-lift)}
+#screen-problem .container{text-align:center;max-width:900px}
+#screen-setup .container{text-align:left;max-width:920px}
+.setup-title{font-size:clamp(22px,3.4vw,32px);line-height:1.18;margin-bottom:16px}
+.setup-title .accent{color:var(--amber)}
+.rules-box{background:var(--wash);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:24px}
+.rules-box li{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:4px}
+.rules-box strong{color:var(--ink)}
+#screen-game .container{max-width:1000px}
+.game-shell{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow-lift)}
+.levels{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.level-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:8px 13px;border-radius:999px;cursor:pointer;font-weight:600}
+.level-btn.active{background:var(--teal);border-color:var(--teal);color:#fff}.level-btn:disabled{opacity:.42;cursor:not-allowed}
+.game-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.network-card,.controls-card{background:var(--wash);border:1px solid var(--line);border-radius:14px;padding:14px}
+.network-card svg{width:100%;height:auto;display:block}
+.control-title{font-weight:700;font-size:13px;margin-bottom:8px}
+.slider-row{display:grid;grid-template-columns:96px minmax(130px,1fr) 118px;gap:10px;align-items:center;margin:10px 0;padding:7px 8px;border:1px solid var(--line);border-radius:10px;background:#fff}.weight-label{display:flex;flex-direction:column;gap:2px;min-width:0}.weight-label b{font-size:13px}.weight-label small{font-size:10px;color:var(--muted);white-space:nowrap}.weight-readout{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:0}.weight-value{font-size:12px;font-weight:700;color:var(--ink)}.weight-clue{font-size:11px;font-weight:700;white-space:nowrap}.slider-row input{width:100%;accent-color:var(--teal);cursor:pointer}
+.slider-row label{font-weight:700;font-size:13px}
+.slider-help{font-size:12px;line-height:1.45;color:var(--muted);margin:-2px 0 10px}.weight-key{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);margin:0 8px 5px}.weight-key span:nth-child(2){font-weight:700;color:var(--ink)}.learning-rule{margin:8px 0 10px;padding:9px 10px;border-radius:9px;background:#f4f8fa;border:1px solid var(--line);font-size:11px;line-height:1.45;color:var(--muted)}.learning-rule b{color:var(--ink)}
+.grad{font-size:12px;text-align:right;color:var(--muted)}
+.stats{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:14px}
+.stats b{color:var(--ink)}
+.meter{height:12px;background:var(--line);border-radius:8px;overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;background:var(--danger);transition:width .25s,background .25s}
+.msg{min-height:1.6em;font-weight:600;font-size:13px}
+.status-ok{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);padding:10px 12px;border-radius:10px;margin-top:10px}
+.status-info{background:var(--wash);color:var(--muted);border:1px solid var(--line);padding:10px 12px;border-radius:10px;margin-top:10px}
+.questions-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:22px}
+.q-card{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1.5px dashed var(--track);border-radius:16px;padding:20px 20px 18px;box-shadow:var(--shadow-card)}
+.q-card:hover{border-color:var(--teal);transform:translateY(-2px)}
+.q-card-head{display:flex;align-items:flex-start;gap:10px}
+.q-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(74,155,209,.12);border:1.5px solid var(--teal-dim);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--blue-dark)}
+.q-note{font-size:13px;color:var(--muted);flex:1}
+#screen-reflect .container,#screen-exercise .container{text-align:left;max-width:1040px}
+.screen-title{font-size:clamp(22px,3.2vw,30px);text-align:center;margin-bottom:22px}
+#screen-reflect .eyebrow,#screen-exercise .eyebrow,#screen-concept .eyebrow{text-align:center}
+#screen-concept .container{max-width:880px}
+.concept-blank{background:var(--panel);border:1.5px dashed var(--track);border-radius:16px;padding:24px 26px;margin-bottom:20px;box-shadow:var(--shadow-card)}
+.concept-blank h4{font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:16px 0 8px}
+.concept-blank h4:first-of-type{margin-top:0}
+.concept-blank p{font-size:13.5px;line-height:1.6}
+.compare-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.compare-card{background:var(--panel);border:1.5px dashed var(--track);border-radius:14px;padding:20px 18px;text-align:center}
+.compare-title{font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.compare-sub{font-size:12.5px;color:var(--faint);margin-top:6px}
+.formula{background:#172A3A;color:#EAF4FF;border-radius:10px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;overflow:auto;margin-top:8px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(31,46,55,.5);display:none;align-items:center;justify-content:center;z-index:80;padding:20px}
+.modal-backdrop.show{display:flex}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px 30px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(23,50,77,.22)}
+.modal-eyebrow{font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+.modal-card p{font-size:14.5px;line-height:1.6;color:var(--muted);margin:0 0 10px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--banner);color:#fff;font-weight:600;font-size:13px;padding:12px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:760px){.slider-row{grid-template-columns:86px minmax(110px,1fr) 104px}.weight-label small{font-size:9px}.weight-clue{font-size:10px}.game-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.questions-grid{grid-template-columns:1fr}.problem-card,.setup-card{padding:30px 22px}.compare-cards{grid-template-columns:1fr}}
+@media(max-width:480px){.progress-step .label{display:none}.progress-line{width:8px}.screen{padding:28px 14px}.game-shell{padding:14px}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <button class="back-btn" id="back-btn">← Back</button>
+  <div class="progress" id="progress"></div>
+</div>
+
+<!-- STEP 1 -->
+<section class="screen active" id="screen-problem">
+  <div class="container">
+    <div class="problem-card">
+      <span class="eyebrow">Step 1 — Problem</span>
+      <h1 style="font-size:clamp(24px,3.6vw,34px);margin-bottom:18px">A network made a mistake. Which connections should change?</h1>
+      <p style="font-size:16px;max-width:760px;margin:0 auto 20px">
+        Imagine a tiny neural network that receives a few numbers and produces one answer.
+        Its current answer is not quite right. You can change the connections between the neurons,
+        but the challenge is knowing <em>which</em> connection should change and in which direction.
+      </p>
+      <div class="guide-note" style="max-width:760px;margin:0 auto">
+        <span class="guide-kicker">Your challenge</span>
+        <p>Can you get the network's output close to its target with as few changes as possible?</p>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:26px">
+      <button class="btn-primary" id="problem-next">Continue →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 -->
+<section class="screen" id="screen-setup">
+  <div class="container">
+    <div class="setup-card">
+      <span class="eyebrow">Step 2 — Setup</span>
+      <h2 class="setup-title">Meet the <span class="accent">tiny network</span></h2>
+      <div class="rules-box">
+        <ul>
+          <li><strong>Inputs:</strong> two values enter the network and flow from left to right.</li>
+          <li><strong>Weights:</strong> six connections control how strongly information travels.</li>
+          <li><strong>Your job:</strong> move the six weight sliders until the output is within <strong>0.03</strong> of the target.</li>
+          <li><strong>Feedback:</strong> the output and loss update after every move.</li>
+          <li><strong>Direction hint:</strong> see whether each weight should go <strong>up</strong> or <strong>down</strong>. A hint costs 5 points.</li>
+          <li><strong>Backprop step:</strong> let the computed gradients move all six weights automatically.</li>
+          <li><strong>Scoring:</strong> fewer manual moves and fewer hints produce a better score.</li>
+        </ul>
+      </div>
+      <div class="guide-note">
+        <span class="guide-kicker">Important</span>
+        <p>Do not worry about the name of the algorithm yet. First observe what information helps you decide how to change a weight.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="start-demo">Enter the Game →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 -->
+<section class="screen" id="screen-game">
+  <div class="container">
+    <span class="eyebrow">Step 3 — Game</span>
+    <h2 class="screen-title">Teach the network to hit its target</h2>
+
+    <div class="game-shell">
+      <div class="levels" id="lvls" aria-label="Choose level"></div>
+
+      <div class="game-grid">
+        <div class="network-card">
+          <svg id="net" viewBox="0 0 520 320" role="img" aria-label="Two input neurons, two hidden neurons and one output neuron"></svg>
+        </div>
+
+        <div class="controls-card">
+          <div class="control-title">Change the connections</div>
+          <div class="slider-help">
+            Each slider controls one connection. Change the <b>weight</b>, then watch how the output changes.
+            Try to make the network reach the target using more than one connection.
+          </div>
+          <div class="weight-key">
+            <span>smaller weight</span><span>current weight</span><span>larger weight</span>
+          </div>
+          <div class="learning-rule">
+            <b>Challenge rule:</b> one connection cannot solve this level by itself.
+            Watch how several connections work together.
+          </div>
+          <div id="sliders"></div>
+
+          <div class="btn-row" style="justify-content:flex-start;margin-top:14px">
+            <button class="btn-ghost" id="hintBtn">Show me a clue −5 pts</button>
+            <button class="btn-primary" id="stepBtn" title="Let backpropagation choose a small helpful change for every connection.">Take a learning step</button>
+            <button class="btn-ghost" id="autoBtn" title="Automatically take learning steps until the target is reached">Let it learn</button>
+            <button class="btn-ghost" id="resetBtn">Reset</button>
+          </div>
+
+          <div id="gameStatus" class="status-info">Start with Level 1. Change a connection, watch the output, and learn what each weight does.</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <span>Output <b id="o">0</b></span>
+        <span>Target <b id="t">0</b></span>
+        <span>Loss <b id="loss">0</b></span>
+        <span>Moves <b id="moves">0</b></span>
+        <span>Hints <b id="peeks">0</b></span>
+        <span>Score <b id="score">100</b></span>
+      </div>
+
+      <div class="meter" aria-label="Loss">
+        <i id="bar"></i>
+      </div>
+      <div class="msg" id="msg" aria-live="polite"></div>
+    </div>
+
+    <div class="guide-note" style="margin-top:16px">
+      <span class="guide-kicker">Observe</span>
+      <p>Pay attention to the arrows. A <strong>negative gradient</strong> means increasing the weight will reduce the loss, while a <strong>positive gradient</strong> means decreasing the weight will reduce the loss. The number shown is the gradient itself—not the amount to change the weight by. The same rule applies to every connection.</p>
+    </div>
+
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn-primary" id="demo-next">I've played it — reflect →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 -->
+<section class="screen" id="screen-reflect">
+  <div class="container">
+    <span class="eyebrow">Step 4 — Reflect</span>
+    <h2 class="screen-title">What did you notice?</h2>
+    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
+      <p>These questions are about what you observed in the game. There is no need to use formal terminology yet.</p>
+    </div>
+
+    <div class="questions-grid">
+      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">When the output was too low or too high, what kind of change helped move it toward the target?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">What did the direction arrow beside a weight tell you that simply looking at the current weight did not?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">Why do you think changing different weights can have different effects on the final output?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What happened when you made a large automatic step compared with making small manual adjustments?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">How could the network decide how much responsibility each earlier connection has for the final mistake?</div></div></div>
+    </div>
+
+    <div class="center-actions">
+      <button class="btn-primary" id="to-concept">Now explain the concept →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 5 -->
+<section class="screen" id="screen-concept">
+  <div class="container">
+    <span class="eyebrow">Step 5 — Concept</span>
+    <h2 class="screen-title">Now name it — Backpropagation</h2>
+
+    <div class="concept-blank">
+      <span class="edit-tag">Key idea</span>
+
+      <h4>Definition</h4>
+      <p><strong>Backpropagation</strong> is the algorithm used to efficiently compute how the loss changes with respect to each weight in a neural network. It sends an error signal backward through the network using the chain rule of calculus.</p>
+
+      <h4>Mechanism</h4>
+      <p>
+        1. Run a forward pass to produce an output.<br>
+        2. Compare the output with the target using a loss function.<br>
+        3. Propagate the error backward from the output toward earlier layers.<br>
+        4. Compute a gradient for every weight.<br>
+        5. Give those gradients to an optimizer such as gradient descent to update the weights.
+      </p>
+
+      <h4>Vocabulary</h4>
+      <p><strong>Loss</strong> — how wrong the prediction is. &nbsp; <strong>Gradient</strong> — direction and rate of change of loss. &nbsp; <strong>Chain rule</strong> — combines local derivatives through a sequence of operations. &nbsp; <strong>Learning rate</strong> — controls how large an update is.</p>
+    </div>
+
+    <div class="compare-cards">
+      <div class="compare-card">
+        <span class="compare-title">Without useful gradients</span>
+        <span class="compare-sub">Try weights blindly and repeatedly measure the result.</span>
+      </div>
+      <div class="compare-card">
+        <span class="compare-title">With backpropagation</span>
+        <span class="compare-sub">Compute how each weight contributes to the loss, then update weights in the useful direction.</span>
+      </div>
+    </div>
+
+    <div class="concept-blank">
+      <h4>What the game was calculating</h4>
+      <p>For the output neuron:</p>
+      <div class="formula">δo = (o − t) · o(1 − o)</div>
+      <p style="margin-top:10px">For a hidden neuron:</p>
+      <div class="formula">δh = δo · w · h(1 − h)</div>
+      <p style="margin-top:10px">Then each weight receives a gradient and can be updated:</p>
+      <div class="formula">w ← w − η · ∂L/∂w</div>
+      <p style="margin-top:10px">The game showed these gradients as arrows. That is why the hint could tell you whether to raise or lower each weight.</p>
+    </div>
+
+    <div class="guide-note">
+      <span class="guide-kicker">Important distinction</span>
+      <p><strong>Backpropagation computes gradients.</strong> An optimizer such as gradient descent uses those gradients to change the weights. They work together, but they are not the same thing.</p>
+    </div>
+
+    <div class="center-actions">
+      <button class="btn-primary" id="to-exercise">Next: try the exercises →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 6 -->
+<section class="screen" id="screen-exercise">
+  <div class="container">
+    <span class="eyebrow">Step 6 — Exercise</span>
+    <h2 class="screen-title">Apply what you discovered</h2>
+    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
+      <p>Explain your reasoning in your own words. The goal is understanding, not memorising a definition.</p>
+    </div>
+
+    <div class="questions-grid">
+      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">A network's prediction is too high. Explain how the sign of a gradient helps decide whether a particular weight should increase or decrease.</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">Why is computing a gradient for every weight in one backward pass much more practical than changing weights one at a time and testing every possibility?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">What role does the chain rule play when an early-layer weight affects the final loss through several neurons?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What could happen if the learning rate is extremely large? What could happen if it is extremely small?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">Suppose a network has many more layers than the game. Why might gradients become very small as they travel backward, especially with sigmoid activations?</div></div></div>
+    </div>
+
+    <div class="guide-note">
+      <span class="guide-kicker">Transfer</span>
+      <p>Think about a real neural network: the same basic backward-gradient idea can be repeated across many layers and many training examples. Modern optimizers add improvements, but the central learning signal still comes from these gradients.</p>
+    </div>
+
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn-ghost" id="go-home-btn">🏠 Restart from Problem</button>
+      <button class="btn-primary" id="restart-journey">Restart the Whole Journey</button>
+    </div>
+  </div>
+</section>
+
+<!-- BACK WARNING -->
+<div class="modal-backdrop" id="modal-back-warn">
+  <div class="modal-card">
+    <div class="modal-eyebrow">Wait —</div>
+    <p>Going back will move you to the previous stage. Your game state may not be preserved as you expect.</p>
+    <p style="font-weight:600;color:var(--ink)">Are you sure you want to go back?</p>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn-ghost" id="back-cancel">Stay Here</button>
+      <button class="btn-danger" id="back-confirm">Go Back</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Six-stage template navigation ---------- */
+const PAGES=[
+  "screen-problem","screen-setup","screen-game",
+  "screen-reflect","screen-concept","screen-exercise"
+];
+const PAGE_LABELS=["Problem","Setup","Game","Reflect","Concept","Exercise"];
+let currentPage=0,unlockedPage=0;
+
+const $=id=>document.getElementById(id);
+
+function renderProgress(){
+  $("progress").innerHTML="";
+  PAGES.forEach((_,i)=>{
+    const step=document.createElement("div");
+    step.className="progress-step"+(i===currentPage?" current":(i<currentPage?" done":""));
+    step.innerHTML='<span class="num">'+(i+1)+'</span><span class="label">'+PAGE_LABELS[i]+"</span>";
+    $("progress").appendChild(step);
+    if(i<PAGES.length-1){
+      const line=document.createElement("div");
+      line.className="progress-line";
+      $("progress").appendChild(line);
+    }
+  });
+}
+
+function showPage(idx){
+  currentPage=idx;
+  if(idx>unlockedPage) unlockedPage=idx;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $(PAGES[idx]).classList.add("active");
+  $("back-btn").disabled=idx===0;
+  renderProgress();
+  window.scrollTo({top:0,behavior:"auto"});
+}
+
+/* ---------- Backpropagation game ---------- */
+const sig=z=>1/(1+Math.exp(-z));
+const LV=[
+  {
+    n:"Level 1 · Raise it",
+    short:"Raise the output",
+    tip:"The output starts too low. Learn how the final connections help raise it. One connection alone cannot reach the target — the network has to share the job.",
+    x:[.5,.8],t:.75,w:[.5,.2,-.3,.4,0,0]
+  },
+  {
+    n:"Level 2 · Lower it",
+    short:"Lower the output",
+    tip:"The output starts too high. Learn how the final connections help lower it. One connection alone cannot reach the target — the network has to share the job.",
+    x:[.7,.3],t:.25,w:[.4,-.2,.5,.1,0,0]
+  },
+  {
+    n:"Level 3 · Challenge",
+    short:"Use all the connections",
+    tip:"Now the hidden connections matter too. Use the clues to discover how a small change earlier in the network can affect the final answer.",
+    x:[.8,.4],t:.72,w:[.3,-.6,-.4,.8,.4,.5]
+  }
+];
+const NAMES=["w1","w2","w3","w4","w5","w6"];
+const CONNECTIONS=["x1 → h1","x2 → h1","x1 → h2","x2 → h2","h1 → o","h2 → o"];
+let completed=[false,false,false];
+let L=0,w=[],moves=0,peeks=0,hint=false,done=false,autoTimer=null;
+
+const f=v=>v.toFixed(3);
+
+function fwd(){
+  const x=LV[L].x;
+  const h1=sig(w[0]*x[0]+w[1]*x[1]);
+  const h2=sig(w[2]*x[0]+w[3]*x[1]);
+  const o=sig(w[4]*h1+w[5]*h2);
+  return {h1,h2,o};
+}
+
+function grad(){
+  const x=LV[L].x,t=LV[L].t,{h1,h2,o}=fwd();
+  const d=(o-t)*o*(1-o);
+  const a=d*w[4]*h1*(1-h1);
+  const b=d*w[5]*h2*(1-h2);
+  return [a*x[0],a*x[1],b*x[0],b*x[1],d*h1,d*h2];
+}
+
+function build(){
+  $("lvls").innerHTML=LV.map((l,i)=>{
+    const locked=i>0 && !completed[i-1];
+    return `<button class="level-btn ${i===L?"active":""}" data-l="${i}" ${locked?"disabled":""}>
+      ${l.n}${completed[i]?" ✓":""}
+    </button>`;
+  }).join("");
+
+  $("sliders").innerHTML=NAMES.map((n,i)=>
+    `<div class="slider-row">
+      <div class="weight-label">
+        <b>${n}</b>
+        <small>${CONNECTIONS[i]}</small>
+      </div>
+      <input type="range" id="s${i}" min="-1.2" max="1.2" step="0.05" aria-label="${n}, ${CONNECTIONS[i]}">
+      <div class="weight-readout">
+        <span class="weight-value" id="v${i}"></span>
+        <span class="weight-clue" id="g${i}"></span>
+      </div>
+    </div>`
+  ).join("");
+
+  NAMES.forEach((n,i)=>{
+    $("s"+i).addEventListener("input",e=>{
+      if(done)return;
+      stopAuto();
+      w[i]=+e.target.value;
+      update();
+    });
+
+    $("s"+i).addEventListener("change",e=>{
+      if(done)return;
+      moves++;
+      update();
+    });
+  });
+}
+function reset(){
+  stopAuto();
+  w=[...LV[L].w];
+  moves=0;
+  peeks=0;
+  hint=false;
+  done=false;
+  build();
+  $("msg").textContent="";
+  $("gameStatus").className="status-info";
+  $("gameStatus").innerHTML=`<b>${LV[L].short}.</b> ${LV[L].tip}`;
+  update();
+}
+function update(){
+  const x=LV[L].x,t=LV[L].t,{h1,h2,o}=fwd();
+  const loss=.5*(o-t)**2,g=grad();
+
+  NAMES.forEach((n,i)=>{
+    $("s"+i).value=w[i];
+
+    const valueEl=$("v"+i);
+    const clueEl=$("g"+i);
+    valueEl.textContent=(w[i]>=0?"+":"")+w[i].toFixed(2);
+
+    if(hint){
+      const atMax=w[i]>=2.95;
+      const atMin=w[i]<=-2.95;
+      let clue,cls;
+
+      if((g[i]<0 && atMax) || (g[i]>0 && atMin)){
+        clue="• this one is already at its limit";
+        cls="hint-stuck";
+      }else if(g[i]<0){
+        clue="↑ increase weight";
+        cls="hint-up";
+      }else if(g[i]>0){
+        clue="↓ decrease weight";
+        cls="hint-down";
+      }else{
+        clue="• no change needed";
+        cls="hint-stuck";
+      }
+
+      clueEl.className="weight-clue "+cls;
+      clueEl.textContent=clue;
+    }else{
+      clueEl.className="weight-clue";
+      clueEl.textContent="";
+    }
+  });
+
+  $("o").textContent=f(o);
+  $("t").textContent=t;
+  $("loss").textContent=f(loss);
+  $("moves").textContent=moves;
+  $("peeks").textContent=peeks;
+
+  const sc=Math.max(0,100-peeks*5-Math.max(0,moves-10));
+  $("score").textContent=sc;
+
+  $("bar").style.width=Math.min(100,loss/.08*100)+"%";
+  $("bar").style.background=done?"var(--success-border)":"var(--danger)";
+  draw(x,{h1,h2,o},g);
+
+  if(!done && Math.abs(o-t)<.03){
+    done=true;
+    completed[L]=true;
+    stopAuto();
+    $("msg").textContent=`Level complete! Score ${sc}.`;
+    $("gameStatus").className="status-ok";
+
+    if(L<LV.length-1){
+      $("gameStatus").textContent=`Great! You learned this move. Level ${L+2} is now unlocked.`;
+      build();
+      update();
+    }else{
+      $("gameStatus").textContent="Amazing! You completed all three levels.";
+      build();
+      update();
+    }
+  }else if(!done){
+    $("msg").textContent=o<t
+      ?"The output is too low. Your goal is to move it up."
+      :"The output is too high. Your goal is to move it down.";
+
+    $("gameStatus").className="status-info";
+    $("gameStatus").innerHTML=hint
+      ?"<b>Follow the clues:</b> the arrow tells you whether that weight should increase or decrease."
+      :`<b>${LV[L].short}.</b> ${LV[L].tip}`;
+  }
+}
+function oNear(o,t){
+  if(Math.abs(o-t)<.03) return "on target!";
+  return o<t ? "output is low — move it up" : "output is high — move it down";
+}
+
+function draw(x,a,g){
+  const P={x1:[60,100],x2:[60,220],h1:[260,100],h2:[260,220],o:[450,160]};
+  const E=[["x1","h1",0],["x2","h1",1],["x1","h2",2],["x2","h2",3],["h1","o",4],["h2","o",5]];
+  let s="";
+  E.forEach(([p,q,i])=>{
+    const A=P[p],B=P[q],v=w[i];
+    const c=v>=0?"#4A9BD1":"#EA8C36";
+    s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c}" stroke-width="${1+Math.abs(v)*2.2}" opacity=".75"/>`;
+    const mx=A[0]*.35+B[0]*.65,my=A[1]*.35+B[1]*.65;
+    s+=`<text x="${mx}" y="${my-6}" font-size="12" text-anchor="middle" fill="#1F2E37" stroke="#fff" stroke-width="3" paint-order="stroke">${NAMES[i]}=${v.toFixed(2)}</text>`;
+    if(hint){
+      const gc=g[i]<0?"#2B6FA3":g[i]>0?"#C96F1F":"#54666D";
+      const atMax=w[i]>=2.95, atMin=w[i]<=-2.95;
+      const label=((g[i]<0&&atMax)||(g[i]>0&&atMin))
+        ?"try another"
+        :(g[i]<0?"increase weight":g[i]>0?"decrease weight":"no change");
+      s+=`<text x="${mx}" y="${my+12}" font-size="11" font-weight="700" text-anchor="middle" fill="${gc}" stroke="#fff" stroke-width="3" paint-order="stroke">${label}</text>`;
+    }
+  });
+
+  const N=(k,lab,val)=>{
+    const [X,Y]=P[k];
+    return `<circle cx="${X}" cy="${Y}" r="30" fill="#fff" stroke="#1F2E37" stroke-width="2"/>
+      <text x="${X}" y="${Y-3}" text-anchor="middle" font-size="13" font-weight="600" fill="#1F2E37">${lab}</text>
+      <text x="${X}" y="${Y+13}" text-anchor="middle" font-size="12" fill="#54666D">${val}</text>`;
+  };
+
+  s+=N("x1","x1",x[0])+N("x2","x2",x[1])+N("h1","h1",a.h1.toFixed(2))+N("h2","h2",a.h2.toFixed(2))+N("o","o",a.o.toFixed(2));
+  s+=`<text x="450" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#4B7A4A">target ${LV[L].t}</text>`;
+  s+=`<text x="450" y="232" text-anchor="middle" font-size="11" fill="#54666D">${oNear(a.o,LV[L].t)}</text>`;
+  s+=`<text x="10" y="310" font-size="12" fill="#54666D">Blue = adds · orange = subtracts · thicker = stronger connection</text>`;
+  $("net").innerHTML=s;
+}
+
+function backpropStep(eta=2.5){
+  if(done)return false;
+
+  const before=fwd().o;
+  const g=grad();
+  w=w.map((v,i)=>Math.max(-3,Math.min(3,v-eta*g[i])));
+  moves++;
+  hint=true;
+  update();
+
+  if(!done){
+    const after=fwd().o;
+    $("gameStatus").innerHTML=after===before
+      ? "<b>Watch closely:</b> this step was very small. Try the next one."
+      : `<b>Learning step:</b> output moved from ${before.toFixed(2)} to ${after.toFixed(2)}.`;
+  }
+
+  return done;
+}
+
+function stopAuto(){
+  if(autoTimer){
+    clearInterval(autoTimer);
+    autoTimer=null;
+  }
+  $("autoBtn").textContent="Auto-play";
+}
+
+function startAuto(){
+  if(done)return;
+
+  /* If autoplay is already running, the same button pauses it. */
+  if(autoTimer){
+    stopAuto();
+    return;
+  }
+
+  $("autoBtn").textContent="Pause auto-play";
+
+  /*
+    Autoplay uses a stronger learning rate than the manual step.
+    This makes the demonstration visibly converge instead of requiring
+    dozens of very small steps.
+  */
+  const AUTO_ETA=3.5;
+  const AUTO_DELAY=500;
+
+  autoTimer=setInterval(()=>{
+    if(done){
+      stopAuto();
+      return;
+    }
+
+    const finished=backpropStep(AUTO_ETA);
+
+    if(finished){
+      stopAuto();
+    }
+  },AUTO_DELAY);
+}
+
+$("hintBtn").onclick=()=>{
+  if(done)return;
+  if(!hint)peeks++;
+  hint=!hint;
+  update();
+};
+
+$("stepBtn").onclick=()=>{
+  stopAuto();
+  backpropStep();
+};
+
+$("autoBtn").onclick=startAuto;
+$("resetBtn").onclick=reset;
+
+$("lvls").onclick=e=>{
+  const b=e.target.closest("[data-l]");
+  if(!b || b.disabled)return;
+
+  const next=+b.dataset.l;
+  L=next;
+  reset();
+};
+
+/* ---------- Navigation ---------- */
+$("problem-next").onclick=()=>showPage(1);
+$("start-demo").onclick=()=>showPage(2);
+$("demo-next").onclick=()=>showPage(3);
+$("to-concept").onclick=()=>showPage(4);
+$("to-exercise").onclick=()=>showPage(5);
+
+$("restart-journey").onclick=()=>{
+  reset();
+  unlockedPage=0;
+  showPage(0);
+};
+
+$("go-home-btn").onclick=()=>{
+  reset();
+  unlockedPage=0;
+  showPage(0);
+};
+
+$("back-btn").onclick=()=>{
+  if(currentPage===0)return;
+  if(PAGES[currentPage]==="screen-game"){
+    $("modal-back-warn").classList.add("show");
+    return;
+  }
+  unlockedPage=currentPage-1;
+  showPage(currentPage-1);
+};
+
+$("back-cancel").onclick=()=>$("modal-back-warn").classList.remove("show");
+
+$("back-confirm").onclick=()=>{
+  $("modal-back-warn").classList.remove("show");
+  const target=currentPage-1;
+  unlockedPage=target;
+  showPage(target);
+};
+
+renderProgress();
+$("back-btn").disabled=true;
+reset();
+
+})();
+</script>
+</body>
+</html>
