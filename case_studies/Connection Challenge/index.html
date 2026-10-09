@@ -126,61 +126,19 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
   <div class="progress" id="progress"></div>
 </div>
 
-<!-- STEP 1 -->
-<section class="screen active" id="screen-problem">
+<!-- PART 1: PLAY THE GAME -->
+<section class="screen active" id="screen-game">
   <div class="container">
-    <div class="problem-card">
-      <span class="eyebrow">Step 1 — Problem</span>
-      <h1 style="font-size:clamp(24px,3.6vw,34px);margin-bottom:18px">A network made a mistake. Which connections should change?</h1>
-      <p style="font-size:16px;max-width:760px;margin:0 auto 20px">
-        Imagine a tiny neural network that receives a few numbers and produces one answer.
-        Its current answer is not quite right. You can change the connections between the neurons,
-        but the challenge is knowing <em>which</em> connection should change and in which direction.
+    <span class="eyebrow">Part 1 — Play the Game</span>
+    <h1 class="screen-title">Teach the network to hit its target</h1>
+
+    <div class="guide-note" style="max-width:1000px;margin-bottom:20px;">
+      <span class="guide-kicker">Intuition Challenge</span>
+      <p><strong>A network made a mistake! Can you fix the connections?</strong></p>
+      <p style="margin-top:4px;">
+        Imagine a small network that takes inputs and calculates an answer. Right now, its prediction is wrong. Your goal is to move the connection sliders to reach the target within <strong>0.03</strong>. Observe how changing different connections changes the output!
       </p>
-      <div class="guide-note" style="max-width:760px;margin:0 auto">
-        <span class="guide-kicker">Your challenge</span>
-        <p>Can you get the network's output close to its target with as few changes as possible?</p>
-      </div>
     </div>
-    <div class="btn-row" style="margin-top:26px">
-      <button class="btn-primary" id="problem-next">Continue →</button>
-    </div>
-  </div>
-</section>
-
-<!-- STEP 2 -->
-<section class="screen" id="screen-setup">
-  <div class="container">
-    <div class="setup-card">
-      <span class="eyebrow">Step 2 — Setup</span>
-      <h2 class="setup-title">Meet the <span class="accent">tiny network</span></h2>
-      <div class="rules-box">
-        <ul>
-          <li><strong>Inputs:</strong> two values enter the network and flow from left to right.</li>
-          <li><strong>Weights:</strong> six connections control how strongly information travels.</li>
-          <li><strong>Your job:</strong> move the six weight sliders until the output is within <strong>0.03</strong> of the target.</li>
-          <li><strong>Feedback:</strong> the output and loss update after every move.</li>
-          <li><strong>Direction hint:</strong> see whether each weight should go <strong>up</strong> or <strong>down</strong>. A hint costs 5 points.</li>
-          <li><strong>Backprop step:</strong> let the computed gradients move all six weights automatically.</li>
-          <li><strong>Scoring:</strong> fewer manual moves and fewer hints produce a better score.</li>
-        </ul>
-      </div>
-      <div class="guide-note">
-        <span class="guide-kicker">Important</span>
-        <p>Do not worry about the name of the algorithm yet. First observe what information helps you decide how to change a weight.</p>
-      </div>
-      <div class="btn-row">
-        <button class="btn-primary" id="start-demo">Enter the Game →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STEP 3 -->
-<section class="screen" id="screen-game">
-  <div class="container">
-    <span class="eyebrow">Step 3 — Game</span>
-    <h2 class="screen-title">Teach the network to hit its target</h2>
 
     <div class="game-shell">
       <div class="levels" id="lvls" aria-label="Choose level"></div>
@@ -194,7 +152,6 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
           <div class="control-title">Change the connections</div>
           <div class="slider-help">
             Each slider controls one connection. Change the <b>weight</b>, then watch how the output changes.
-            Try to make the network reach the target using more than one connection.
           </div>
           <div class="weight-key">
             <span>smaller weight</span><span>current weight</span><span>larger weight</span>
@@ -233,126 +190,156 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 
     <div class="guide-note" style="margin-top:16px">
       <span class="guide-kicker">Observe</span>
-      <p>Pay attention to the arrows. A <strong>negative gradient</strong> means increasing the weight will reduce the loss, while a <strong>positive gradient</strong> means decreasing the weight will reduce the loss. The number shown is the gradient itself—not the amount to change the weight by. The same rule applies to every connection.</p>
-    </div>
-
-    <div class="btn-row" style="margin-top:20px">
-      <button class="btn-primary" id="demo-next">I've played it — reflect →</button>
-    </div>
-  </div>
-</section>
-
-<!-- STEP 4 -->
-<section class="screen" id="screen-reflect">
-  <div class="container">
-    <span class="eyebrow">Step 4 — Reflect</span>
-    <h2 class="screen-title">What did you notice?</h2>
-    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
-      <p>These questions are about what you observed in the game. There is no need to use formal terminology yet.</p>
-    </div>
-
-    <div class="questions-grid">
-      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">When the output was too low or too high, what kind of change helped move it toward the target?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">What did the direction arrow beside a weight tell you that simply looking at the current weight did not?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">Why do you think changing different weights can have different effects on the final output?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What happened when you made a large automatic step compared with making small manual adjustments?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">How could the network decide how much responsibility each earlier connection has for the final mistake?</div></div></div>
+      <p>Pay attention to the arrows when you request a clue or step. A <strong>negative gradient</strong> means increasing the weight will reduce error, while a <strong>positive gradient</strong> means decreasing the weight will reduce error. The same rule applies across all connections!</p>
     </div>
 
     <div class="center-actions">
-      <button class="btn-primary" id="to-concept">Now explain the concept →</button>
+      <button class="btn-primary" id="demo-next">I've played it — Next: Part 2 (Reflect) →</button>
     </div>
   </div>
 </section>
 
-<!-- STEP 5 -->
+<!-- PART 2: REFLECT -->
+<section class="screen" id="screen-reflect">
+  <div class="container">
+    <span class="eyebrow">Part 2 — Reflect</span>
+    <h2 class="screen-title">What did you notice?</h2>
+    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
+      <p>Reflect on what you observed during the game. There is no need to use formal technical terminology yet.</p>
+    </div>
+
+    <div class="questions-grid">
+      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">When the output was too low or too high, what kind of weight change helped move it toward the target?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">What did the direction clue arrows beside a weight tell you that looking at the current weight value alone could not?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">Why do you think changing different weights (e.g. early inputs vs final output connections) had different effects on the final answer?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What happened when you clicked 'Take a learning step' compared with making manual slider adjustments?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">How could the system decide how much responsibility each earlier connection had for the final mistake?</div></div></div>
+    </div>
+
+    <div class="center-actions">
+      <button class="btn-primary" id="to-concept">Next: Part 3 (Understand the Concept) →</button>
+    </div>
+  </div>
+</section>
+
+<!-- PART 3: UNDERSTAND THE CONCEPT -->
 <section class="screen" id="screen-concept">
   <div class="container">
-    <span class="eyebrow">Step 5 — Concept</span>
-    <h2 class="screen-title">Now name it — Backpropagation</h2>
+    <span class="eyebrow">Part 3 — Understand the Concept</span>
+    <h2 class="screen-title">Meet the Tiny Network & Backpropagation</h2>
 
+    <!-- MEET THE TINY NETWORK CARD -->
+    <div class="setup-card" style="margin-bottom:24px;">
+      <span class="edit-tag">System Anatomy</span>
+      <h3 class="setup-title">Meet the <span class="accent">Tiny Network</span></h3>
+      <p style="font-size:14.5px;color:var(--muted);margin-bottom:16px;">
+        Now that you've experimented with adjusting connections in the game, here is what was happening behind the scenes:
+      </p>
+      <div class="rules-box" style="margin-bottom:0;">
+        <ul>
+          <li><strong>Inputs ($x_1, x_2$):</strong> Two values enter the network and flow forward from left to right.</li>
+          <li><strong>Hidden Layer ($h_1, h_2$):</strong> Intermediate neurons processing signals with activation functions.</li>
+          <li><strong>Weights ($w_1 \dots w_6$):</strong> Six connection strengths that control how strongly information travels.</li>
+          <li><strong>Output ($o$) & Target ($t$):</strong> Network output $o$ is compared against target $t$ to calculate the <strong>Loss</strong> (error).</li>
+          <li><strong>Gradients & Clues:</strong> The clue arrows showed computed gradients—indicating whether each weight should go <strong>up</strong> or <strong>down</strong>.</li>
+          <li><strong>Automated Learning Step:</strong> Automatically adjusted all six weights in unison based on their gradients.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DEFINITION & MECHANISM -->
     <div class="concept-blank">
-      <span class="edit-tag">Key idea</span>
+      <span class="edit-tag">Core Algorithm</span>
 
-      <h4>Definition</h4>
-      <p><strong>Backpropagation</strong> is the algorithm used to efficiently compute how the loss changes with respect to each weight in a neural network. It sends an error signal backward through the network using the chain rule of calculus.</p>
+      <h4>What is Backpropagation?</h4>
+      <p><strong>Backpropagation</strong> (short for <em>backward propagation of errors</em>) is the algorithm used to efficiently compute how much each weight connection in a neural network contributed to the overall prediction error (loss).</p>
 
-      <h4>Mechanism</h4>
+      <h4>The 5-Step Learning Process</h4>
       <p>
-        1. Run a forward pass to produce an output.<br>
-        2. Compare the output with the target using a loss function.<br>
-        3. Propagate the error backward from the output toward earlier layers.<br>
-        4. Compute a gradient for every weight.<br>
-        5. Give those gradients to an optimizer such as gradient descent to update the weights.
+        1. <strong>Forward Pass:</strong> Inputs travel forward through layers to compute hidden neuron values and the output.<br>
+        2. <strong>Loss Evaluation:</strong> Measure prediction error between output $o$ and target $t$ using a loss function.<br>
+        3. <strong>Backward Error Propagation:</strong> Propagate the error backward from output to hidden layers using the <strong>chain rule</strong>.<br>
+        4. <strong>Gradient Computation:</strong> Calculate the gradient $\frac{\partial L}{\partial w}$ for every weight connection.<br>
+        5. <strong>Optimizer Update:</strong> An optimizer (e.g. gradient descent) adjusts weights: $w \leftarrow w - \eta \frac{\partial L}{\partial w}$.
       </p>
 
-      <h4>Vocabulary</h4>
-      <p><strong>Loss</strong> — how wrong the prediction is. &nbsp; <strong>Gradient</strong> — direction and rate of change of loss. &nbsp; <strong>Chain rule</strong> — combines local derivatives through a sequence of operations. &nbsp; <strong>Learning rate</strong> — controls how large an update is.</p>
+      <h4>Essential Vocabulary</h4>
+      <p>
+        <strong>Loss ($L$):</strong> Measure of how wrong the network prediction is. &nbsp; 
+        <strong>Gradient ($\frac{\partial L}{\partial w}$):</strong> Direction and rate of change of loss per weight. &nbsp; 
+        <strong>Chain Rule:</strong> Calculus rule for computing derivatives through sequential operations. &nbsp; 
+        <strong>Learning Rate ($\eta$):</strong> Controls the size of weight updates.
+      </p>
     </div>
 
     <div class="compare-cards">
       <div class="compare-card">
-        <span class="compare-title">Without useful gradients</span>
-        <span class="compare-sub">Try weights blindly and repeatedly measure the result.</span>
+        <span class="compare-title">Without Backpropagation (Trial & Error)</span>
+        <span class="compare-sub">Guess weights randomly or test connections one at a time—impossible for modern networks with billions of parameters.</span>
       </div>
       <div class="compare-card">
-        <span class="compare-title">With backpropagation</span>
-        <span class="compare-sub">Compute how each weight contributes to the loss, then update weights in the useful direction.</span>
+        <span class="compare-title">With Backpropagation</span>
+        <span class="compare-sub">Calculates exact error responsibility for all weights simultaneously in a single backward pass.</span>
       </div>
     </div>
 
+    <!-- MATHEMATICAL FORMULAS -->
     <div class="concept-blank">
-      <h4>What the game was calculating</h4>
+      <span class="edit-tag">Under the Hood</span>
+      <h4>What the Game Was Calculating</h4>
       <p>For the output neuron:</p>
       <div class="formula">δo = (o − t) · o(1 − o)</div>
+
       <p style="margin-top:10px">For a hidden neuron:</p>
-      <div class="formula">δh = δo · w · h(1 − h)</div>
-      <p style="margin-top:10px">Then each weight receives a gradient and can be updated:</p>
-      <div class="formula">w ← w − η · ∂L/∂w</div>
-      <p style="margin-top:10px">The game showed these gradients as arrows. That is why the hint could tell you whether to raise or lower each weight.</p>
+      <div class="formula">δh = δo · w_output · h(1 − h)</div>
+
+      <p style="margin-top:10px">Gradient calculation and weight update rule:</p>
+      <div class="formula">∂L/∂w = δ · input_val  →  w ← w − η · ∂L/∂w</div>
+
+      <p style="margin-top:10px">The direction arrows showed $-\frac{\partial L}{\partial w}$. If negative, increasing the weight reduces loss ($\uparrow$); if positive, decreasing the weight reduces loss ($\downarrow$).</p>
     </div>
 
     <div class="guide-note">
-      <span class="guide-kicker">Important distinction</span>
-      <p><strong>Backpropagation computes gradients.</strong> An optimizer such as gradient descent uses those gradients to change the weights. They work together, but they are not the same thing.</p>
+      <span class="guide-kicker">Important Distinction</span>
+      <p><strong>Backpropagation computes gradients;</strong> an optimizer (such as Gradient Descent) uses those gradients to change the weights. They work together, but they perform distinct roles.</p>
     </div>
 
     <div class="center-actions">
-      <button class="btn-primary" id="to-exercise">Next: try the exercises →</button>
+      <button class="btn-primary" id="to-exercise">Next: Part 4 (Exercises) →</button>
     </div>
   </div>
 </section>
 
-<!-- STEP 6 -->
+<!-- PART 4: EXERCISE -->
 <section class="screen" id="screen-exercise">
   <div class="container">
-    <span class="eyebrow">Step 6 — Exercise</span>
+    <span class="eyebrow">Part 4 — Exercise</span>
     <h2 class="screen-title">Apply what you discovered</h2>
     <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
-      <p>Explain your reasoning in your own words. The goal is understanding, not memorising a definition.</p>
+      <p>Explain your reasoning in your own words. The goal is conceptual understanding, not memorising definitions.</p>
     </div>
 
     <div class="questions-grid">
-      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">A network's prediction is too high. Explain how the sign of a gradient helps decide whether a particular weight should increase or decrease.</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">Why is computing a gradient for every weight in one backward pass much more practical than changing weights one at a time and testing every possibility?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">What role does the chain rule play when an early-layer weight affects the final loss through several neurons?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What could happen if the learning rate is extremely large? What could happen if it is extremely small?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">Suppose a network has many more layers than the game. Why might gradients become very small as they travel backward, especially with sigmoid activations?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">A network's prediction is too high. Explain how the sign of a gradient ($\frac{\partial L}{\partial w}$) helps decide whether a particular weight should increase or decrease.</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">Why is computing gradients for all weights in one backward pass far more practical than changing weights one at a time by trial and error?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">What role does the chain rule play when an early-layer weight affects the final loss through multiple intermediate neurons?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What could happen if the learning rate ($\eta$) is set extremely large? What could happen if it is set extremely small?</div></div></div>
+      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">In networks with many layers, why might gradients become very small as they propagate backward (the vanishing gradient problem)?</div></div></div>
     </div>
 
     <div class="guide-note">
-      <span class="guide-kicker">Transfer</span>
-      <p>Think about a real neural network: the same basic backward-gradient idea can be repeated across many layers and many training examples. Modern optimizers add improvements, but the central learning signal still comes from these gradients.</p>
+      <span class="guide-kicker">Real-World Transfer</span>
+      <p>In modern neural networks with millions of parameters, the exact same principle applies: a forward pass calculates predictions and loss, followed by backpropagation to calculate gradients for every single connection weight.</p>
     </div>
 
     <div class="btn-row" style="margin-top:8px">
-      <button class="btn-ghost" id="go-home-btn">🏠 Restart from Problem</button>
+      <button class="btn-ghost" id="go-home-btn">🏠 Play Game (Part 1)</button>
       <button class="btn-primary" id="restart-journey">Restart the Whole Journey</button>
     </div>
   </div>
 </section>
 
-<!-- BACK WARNING -->
+<!-- BACK WARNING MODAL -->
 <div class="modal-backdrop" id="modal-back-warn">
   <div class="modal-card">
     <div class="modal-eyebrow">Wait —</div>
@@ -371,12 +358,11 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 (function(){
 "use strict";
 
-/* ---------- Six-stage template navigation ---------- */
+/* ---------- Four-part template navigation ---------- */
 const PAGES=[
-  "screen-problem","screen-setup","screen-game",
-  "screen-reflect","screen-concept","screen-exercise"
+  "screen-game","screen-reflect","screen-concept","screen-exercise"
 ];
-const PAGE_LABELS=["Problem","Setup","Game","Reflect","Concept","Exercise"];
+const PAGE_LABELS=["Play","Reflect","Concept","Exercise"];
 let currentPage=0,unlockedPage=0;
 
 const $=id=>document.getElementById(id);
@@ -649,7 +635,6 @@ function stopAuto(){
 function startAuto(){
   if(done)return;
 
-  /* If autoplay is already running, the same button pauses it. */
   if(autoTimer){
     stopAuto();
     return;
@@ -657,11 +642,6 @@ function startAuto(){
 
   $("autoBtn").textContent="Pause auto-play";
 
-  /*
-    Autoplay uses a stronger learning rate than the manual step.
-    This makes the demonstration visibly converge instead of requiring
-    dozens of very small steps.
-  */
   const AUTO_ETA=3.5;
   const AUTO_DELAY=500;
 
@@ -704,11 +684,9 @@ $("lvls").onclick=e=>{
 };
 
 /* ---------- Navigation ---------- */
-$("problem-next").onclick=()=>showPage(1);
-$("start-demo").onclick=()=>showPage(2);
-$("demo-next").onclick=()=>showPage(3);
-$("to-concept").onclick=()=>showPage(4);
-$("to-exercise").onclick=()=>showPage(5);
+$("demo-next").onclick=()=>showPage(1);
+$("to-concept").onclick=()=>showPage(2);
+$("to-exercise").onclick=()=>showPage(3);
 
 $("restart-journey").onclick=()=>{
   reset();
@@ -724,10 +702,6 @@ $("go-home-btn").onclick=()=>{
 
 $("back-btn").onclick=()=>{
   if(currentPage===0)return;
-  if(PAGES[currentPage]==="screen-game"){
-    $("modal-back-warn").classList.add("show");
-    return;
-  }
   unlockedPage=currentPage-1;
   showPage(currentPage-1);
 };
