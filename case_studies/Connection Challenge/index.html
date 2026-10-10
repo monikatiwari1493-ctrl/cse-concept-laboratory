@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Case Study — Backpropagation</title>
+<title>Case Study — The Connection Challenge (Backpropagation)</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -51,7 +51,7 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 .progress-line{width:14px;height:1px;background:var(--line)}
 .screen{display:none;min-height:calc(100vh - 56px);width:100%;align-items:center;justify-content:center;padding:40px 20px}
 .screen.active{display:flex}
-.container{width:100%;max-width:920px;margin:0 auto;min-width:0}
+.container{width:100%;max-width:960px;margin:0 auto;min-width:0}
 .eyebrow{font-weight:700;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);display:block;margin-bottom:12px}
 .guide-note{background:var(--wash);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:14px 18px;margin:0 0 16px;text-align:left}
 .guide-note p{color:var(--ink);font-size:13.5px}
@@ -59,27 +59,34 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 .guide-note li{color:var(--ink);font-size:13.5px;line-height:1.6;margin-bottom:4px}
 .guide-kicker{display:inline-block;font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
 .edit-tag{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:10px}
-.problem-card,.setup-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:44px 40px;box-shadow:var(--shadow-lift)}
-#screen-problem .container{text-align:center;max-width:900px}
-#screen-setup .container{text-align:left;max-width:920px}
-.setup-title{font-size:clamp(22px,3.4vw,32px);line-height:1.18;margin-bottom:16px}
+.setup-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:32px 30px;box-shadow:var(--shadow-lift)}
+.setup-title{font-size:clamp(20px,2.8vw,28px);line-height:1.2;margin-bottom:12px}
 .setup-title .accent{color:var(--amber)}
-.rules-box{background:var(--wash);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-bottom:24px}
-.rules-box li{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:4px}
+.rules-box{background:var(--wash);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:20px}
+.rules-box li{font-size:13.5px;color:var(--muted);line-height:1.65;margin-bottom:4px}
 .rules-box strong{color:var(--ink)}
-#screen-game .container{max-width:1000px}
 .game-shell{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow-lift)}
 .levels{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.level-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:8px 13px;border-radius:999px;cursor:pointer;font-weight:600}
-.level-btn.active{background:var(--teal);border-color:var(--teal);color:#fff}.level-btn:disabled{opacity:.42;cursor:not-allowed}
-.game-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.level-btn{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:600;font-size:12.5px}
+.level-btn.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.level-btn:disabled{opacity:.42;cursor:not-allowed}
+.game-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
 .network-card,.controls-card{background:var(--wash);border:1px solid var(--line);border-radius:14px;padding:14px}
 .network-card svg{width:100%;height:auto;display:block}
 .control-title{font-weight:700;font-size:13px;margin-bottom:8px}
-.slider-row{display:grid;grid-template-columns:96px minmax(130px,1fr) 118px;gap:10px;align-items:center;margin:10px 0;padding:7px 8px;border:1px solid var(--line);border-radius:10px;background:#fff}.weight-label{display:flex;flex-direction:column;gap:2px;min-width:0}.weight-label b{font-size:13px}.weight-label small{font-size:10px;color:var(--muted);white-space:nowrap}.weight-readout{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:0}.weight-value{font-size:12px;font-weight:700;color:var(--ink)}.weight-clue{font-size:11px;font-weight:700;white-space:nowrap}.slider-row input{width:100%;accent-color:var(--teal);cursor:pointer}
-.slider-row label{font-weight:700;font-size:13px}
-.slider-help{font-size:12px;line-height:1.45;color:var(--muted);margin:-2px 0 10px}.weight-key{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);margin:0 8px 5px}.weight-key span:nth-child(2){font-weight:700;color:var(--ink)}.learning-rule{margin:8px 0 10px;padding:9px 10px;border-radius:9px;background:#f4f8fa;border:1px solid var(--line);font-size:11px;line-height:1.45;color:var(--muted)}.learning-rule b{color:var(--ink)}
-.grad{font-size:12px;text-align:right;color:var(--muted)}
+.slider-row{display:grid;grid-template-columns:105px minmax(120px,1fr) 115px;gap:8px;align-items:center;margin:8px 0;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.weight-label{display:flex;flex-direction:column;gap:1px;min-width:0}
+.weight-label b{font-size:12.5px;color:var(--ink)}
+.weight-label small{font-size:9.5px;color:var(--muted);white-space:nowrap}
+.weight-readout{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:0}
+.weight-value{font-size:11.5px;font-weight:700;color:var(--ink)}
+.weight-clue{font-size:10.5px;font-weight:700;white-space:nowrap}
+.slider-row input{width:100%;accent-color:var(--teal);cursor:pointer}
+.slider-help{font-size:12px;line-height:1.45;color:var(--muted);margin:-2px 0 10px}
+.weight-key{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);margin:0 8px 5px}
+.weight-key span:nth-child(2){font-weight:700;color:var(--ink)}
+.learning-rule{margin:8px 0 10px;padding:8px 10px;border-radius:9px;background:#f4f8fa;border:1px solid var(--line);font-size:11px;line-height:1.45;color:var(--muted)}
+.learning-rule b{color:var(--ink)}
 .stats{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:14px}
 .stats b{color:var(--ink)}
 .meter{height:12px;background:var(--line);border-radius:8px;overflow:hidden;margin:10px 0}
@@ -87,16 +94,15 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 .msg{min-height:1.6em;font-weight:600;font-size:13px}
 .status-ok{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);padding:10px 12px;border-radius:10px;margin-top:10px}
 .status-info{background:var(--wash);color:var(--muted);border:1px solid var(--line);padding:10px 12px;border-radius:10px;margin-top:10px}
+.center-actions{display:flex;justify-content:center;margin-top:24px}
 .questions-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:22px}
 .q-card{display:flex;flex-direction:column;gap:10px;background:var(--panel);border:1.5px dashed var(--track);border-radius:16px;padding:20px 20px 18px;box-shadow:var(--shadow-card)}
 .q-card:hover{border-color:var(--teal);transform:translateY(-2px)}
 .q-card-head{display:flex;align-items:flex-start;gap:10px}
 .q-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:rgba(74,155,209,.12);border:1.5px solid var(--teal-dim);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:var(--blue-dark)}
-.q-note{font-size:13px;color:var(--muted);flex:1}
-#screen-reflect .container,#screen-exercise .container{text-align:left;max-width:1040px}
-.screen-title{font-size:clamp(22px,3.2vw,30px);text-align:center;margin-bottom:22px}
-#screen-reflect .eyebrow,#screen-exercise .eyebrow,#screen-concept .eyebrow{text-align:center}
-#screen-concept .container{max-width:880px}
+.q-note{font-size:13px;color:var(--muted);flex:1;line-height:1.5}
+.screen-title{font-size:clamp(22px,3.2vw,30px);text-align:center;margin-bottom:20px}
+#screen-reflect .eyebrow,#screen-exercise .eyebrow,#screen-concept .eyebrow,#screen-audio .eyebrow{text-align:center}
 .concept-blank{background:var(--panel);border:1.5px dashed var(--track);border-radius:16px;padding:24px 26px;margin-bottom:20px;box-shadow:var(--shadow-card)}
 .concept-blank h4{font-weight:600;font-size:12.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--teal);margin:16px 0 8px}
 .concept-blank h4:first-of-type{margin-top:0}
@@ -104,18 +110,22 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 .compare-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
 .compare-card{background:var(--panel);border:1.5px dashed var(--track);border-radius:14px;padding:20px 18px;text-align:center}
 .compare-title{font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.compare-sub{font-size:12.5px;color:var(--faint);margin-top:6px}
+.compare-sub{font-size:12.5px;color:var(--faint);margin-top:6px;line-height:1.5}
 .formula{background:#172A3A;color:#EAF4FF;border-radius:10px;padding:12px 14px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;overflow:auto;margin-top:8px}
+.mapping-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+.mapping-table th{background:var(--wash);color:var(--blue-dark);text-align:left;padding:10px 14px;border-bottom:2px solid var(--line);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em}
+.mapping-table td{padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink)}
+.mapping-table tr:hover td{background:#fafcff}
+.mapping-table td:first-child{font-weight:600;color:var(--orange-dark)}
+.mapping-table td:last-child{font-weight:700;color:var(--blue-dark)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(31,46,55,.5);display:none;align-items:center;justify-content:center;z-index:80;padding:20px}
 .modal-backdrop.show{display:flex}
 .modal-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px 30px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(23,50,77,.22)}
 .modal-eyebrow{font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
 .modal-card p{font-size:14.5px;line-height:1.6;color:var(--muted);margin:0 0 10px}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--banner);color:#fff;font-weight:600;font-size:13px;padding:12px 20px;border-radius:999px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(max-width:760px){.slider-row{grid-template-columns:86px minmax(110px,1fr) 104px}.weight-label small{font-size:9px}.weight-clue{font-size:10px}.game-grid{grid-template-columns:1fr}}
-@media(max-width:640px){.questions-grid{grid-template-columns:1fr}.problem-card,.setup-card{padding:30px 22px}.compare-cards{grid-template-columns:1fr}}
-@media(max-width:480px){.progress-step .label{display:none}.progress-line{width:8px}.screen{padding:28px 14px}.game-shell{padding:14px}}
+@media(max-width:760px){.slider-row{grid-template-columns:86px minmax(100px,1fr) 98px}.weight-label small{font-size:8.5px}.weight-clue{font-size:9.5px}.game-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.questions-grid{grid-template-columns:1fr}.setup-card{padding:24px 18px}.compare-cards{grid-template-columns:1fr}}
+@media(max-width:480px){.progress-step .label{display:none}.progress-line{width:8px}.screen{padding:24px 12px}.game-shell{padding:14px}}
 </style>
 </head>
 <body>
@@ -126,94 +136,122 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
   <div class="progress" id="progress"></div>
 </div>
 
-<!-- PART 1: PLAY THE GAME -->
-<section class="screen active" id="screen-game">
+<!-- ================= PART 1: PLAY THE GAME (Audio Mixer) ================= -->
+<section class="screen active" id="screen-audio">
   <div class="container">
     <span class="eyebrow">Part 1 — Play the Game</span>
-    <h1 class="screen-title">Teach the network to hit its target</h1>
+    <h1 class="screen-title">The Soundboard Challenge</h1>
 
-    <div class="guide-note" style="max-width:1000px;margin-bottom:20px;">
-      <span class="guide-kicker">Intuition Challenge</span>
-      <p><strong>A network made a mistake! Can you fix the connections?</strong></p>
+    <div class="guide-note" style="margin-bottom:18px;">
+      <span class="guide-kicker">Relatable Intuition Challenge</span>
+      <p><strong>You are behind the concert mixing desk, and the speaker output is wrong!</strong></p>
+      <p style="margin-top:6px;">
+        Two live instruments (<strong>Vocals</strong> and <strong>Synth</strong>) enter your soundboard. Their audio passes through two intermediate <strong>Pre-Amps</strong>, which then mix into the <strong>Master Output</strong> speaker.
+      </p>
       <p style="margin-top:4px;">
-        Imagine a small network that takes inputs and calculates an answer. Right now, its prediction is wrong. Your goal is to move the connection sliders to reach the target within <strong>0.03</strong>. Observe how changing different connections changes the output!
+        Right now, the speaker volume is off-target. Turn the connection knobs so the Master Output reaches the target within <strong>±0.03</strong>. Observe how twisting an early knob sends ripples all the way through to the final speaker!
       </p>
     </div>
 
     <div class="game-shell">
-      <div class="levels" id="lvls" aria-label="Choose level"></div>
+      <div class="levels" id="audio-lvls" aria-label="Choose mixer level"></div>
 
       <div class="game-grid">
         <div class="network-card">
-          <svg id="net" viewBox="0 0 520 320" role="img" aria-label="Two input neurons, two hidden neurons and one output neuron"></svg>
+          <svg id="audio-net" viewBox="0 0 520 320" role="img" aria-label="Two sound inputs, two pre-amp channels, and one master speaker"></svg>
         </div>
 
         <div class="controls-card">
-          <div class="control-title">Change the connections</div>
+          <div class="control-title">Adjust the Mixer Knobs</div>
           <div class="slider-help">
-            Each slider controls one connection. Change the <b>weight</b>, then watch how the output changes.
+            Turn each knob up (+) or down (−) to adjust signal flow between the channels.
           </div>
           <div class="weight-key">
-            <span>smaller weight</span><span>current weight</span><span>larger weight</span>
+            <span>pull back (−)</span><span>current dial</span><span>boost (+)</span>
           </div>
           <div class="learning-rule">
-            <b>Challenge rule:</b> one connection cannot solve this level by itself.
-            Watch how several connections work together.
+            <b>Mixing challenge:</b> Changing an early knob affects both pre-amps and the final speaker. Notice how the knobs work together!
           </div>
-          <div id="sliders"></div>
+
+          <div id="audio-sliders"></div>
 
           <div class="btn-row" style="justify-content:flex-start;margin-top:14px">
-            <button class="btn-ghost" id="hintBtn">Show me a clue −5 pts</button>
-            <button class="btn-primary" id="stepBtn" title="Let backpropagation choose a small helpful change for every connection.">Take a learning step</button>
-            <button class="btn-ghost" id="autoBtn" title="Automatically take learning steps until the target is reached">Let it learn</button>
-            <button class="btn-ghost" id="resetBtn">Reset</button>
+            <button class="btn-ghost" id="audioHintBtn">Soundcheck Clue −5 pts</button>
+            <button class="btn-primary" id="audioStepBtn" title="Calibrate all 6 knobs in harmony based on backward audio feedback">Calibrate Step</button>
+            <button class="btn-ghost" id="audioAutoBtn" title="Automatically calibrate until the target sound level is reached">Auto-Calibrate</button>
+            <button class="btn-ghost" id="audioResetBtn">Reset</button>
           </div>
 
-          <div id="gameStatus" class="status-info">Start with Level 1. Change a connection, watch the output, and learn what each weight does.</div>
+          <div id="audioGameStatus" class="status-info">Start with Level 1. Turn a knob, watch the speaker needle move, and see what each channel does.</div>
         </div>
       </div>
 
       <div class="stats">
-        <span>Output <b id="o">0</b></span>
-        <span>Target <b id="t">0</b></span>
-        <span>Loss <b id="loss">0</b></span>
-        <span>Moves <b id="moves">0</b></span>
-        <span>Hints <b id="peeks">0</b></span>
-        <span>Score <b id="score">100</b></span>
+        <span>Speaker Output <b id="audio-o">0</b></span>
+        <span>Target Level <b id="audio-t">0</b></span>
+        <span>Mismatch <b id="audio-loss">0</b></span>
+        <span>Tweaks <b id="audio-moves">0</b></span>
+        <span>Clues <b id="audio-peeks">0</b></span>
+        <span>Score <b id="audio-score">100</b></span>
       </div>
 
-      <div class="meter" aria-label="Loss">
-        <i id="bar"></i>
+      <div class="meter" aria-label="Mismatch error">
+        <i id="audio-bar"></i>
       </div>
-      <div class="msg" id="msg" aria-live="polite"></div>
+      <div class="msg" id="audio-msg" aria-live="polite"></div>
     </div>
 
     <div class="guide-note" style="margin-top:16px">
-      <span class="guide-kicker">Observe</span>
-      <p>Pay attention to the arrows when you request a clue or step. A <strong>negative gradient</strong> means increasing the weight will reduce error, while a <strong>positive gradient</strong> means decreasing the weight will reduce error. The same rule applies across all connections!</p>
+      <span class="guide-kicker">What to notice</span>
+      <p>When you ask for a clue or calibrate, notice how the feedback flows <strong>backward from the speaker to earlier knobs</strong>. If a knob made the sound too high, it tells you to pull it back ($\downarrow$); if too low, it tells you to boost it ($\uparrow$).</p>
     </div>
 
     <div class="center-actions">
-      <button class="btn-primary" id="demo-next">I've played it — Next: Part 2 (Reflect) →</button>
+      <button class="btn-primary" id="audio-next">I've played the mixer — Next: Part 2 (Reflect) →</button>
     </div>
   </div>
 </section>
 
-<!-- PART 2: REFLECT -->
+<!-- ================= PART 2: REFLECT ================= -->
 <section class="screen" id="screen-reflect">
   <div class="container">
     <span class="eyebrow">Part 2 — Reflect</span>
-    <h2 class="screen-title">What did you notice?</h2>
-    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
-      <p>Reflect on what you observed during the game. There is no need to use formal technical terminology yet.</p>
+    <h2 class="screen-title">What did you notice at the soundboard?</h2>
+    <div class="guide-note" style="max-width:780px;margin-left:auto;margin-right:auto">
+      <p>Reflect on what you experienced while adjusting the mixing desk. Answer in your own words—no formal terminology needed yet.</p>
     </div>
 
     <div class="questions-grid">
-      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">When the output was too low or too high, what kind of weight change helped move it toward the target?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">What did the direction clue arrows beside a weight tell you that looking at the current weight value alone could not?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">Why do you think changing different weights (e.g. early inputs vs final output connections) had different effects on the final answer?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What happened when you clicked 'Take a learning step' compared with making manual slider adjustments?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">How could the system decide how much responsibility each earlier connection had for the final mistake?</div></div></div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">01</div>
+          <div class="q-note">When the speaker was too quiet or too loud, how did you decide whether to turn an early Pre-Amp knob versus a Master Output knob?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">02</div>
+          <div class="q-note">Why was adjusting an early knob (like Vocals to Pre-Amp A) harder to predict than adjusting a master knob right before the speaker?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">03</div>
+          <div class="q-note">When you requested a Soundcheck Clue, how did the system figure out whether an early knob needed to go up or down when it only measured the error at the final speaker?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">04</div>
+          <div class="q-note">What happened when you clicked 'Calibrate Step' compared to tweaking knobs manually one at a time?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">05</div>
+          <div class="q-note">If a soundboard had 10 chained mixing stages instead of 2, why would trial-and-error knob tweaking become virtually impossible?</div>
+        </div>
+      </div>
     </div>
 
     <div class="center-actions">
@@ -222,85 +260,147 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
   </div>
 </section>
 
-<!-- PART 3: UNDERSTAND THE CONCEPT -->
+<!-- ================= PART 3: UNDERSTAND THE CONCEPT ================= -->
 <section class="screen" id="screen-concept">
   <div class="container">
     <span class="eyebrow">Part 3 — Understand the Concept</span>
-    <h2 class="screen-title">Meet the Tiny Network & Backpropagation</h2>
+    <h2 class="screen-title">The Reveal: Meet the Tiny Network &amp; Backpropagation</h2>
+
+    <!-- THE REVEAL & MAPPING -->
+    <div class="setup-card" style="margin-bottom:24px;">
+      <span class="edit-tag">The Concept Revealed</span>
+      <h3 class="setup-title">You were training a <span class="accent">Neural Network</span>!</h3>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">
+        Everything you experienced on the soundboard maps 1-to-1 to how artificial neural networks learn:
+      </p>
+
+      <table class="mapping-table">
+        <thead>
+          <tr>
+            <th>At the Soundboard (Part 1)</th>
+            <th>In Neural Networks (Concept)</th>
+            <th>Role in Learning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🎤 Vocals &amp; 🎹 Synth ($x_1, x_2$)</td>
+            <td>Input Layer</td>
+            <td>Data values fed forward into the system</td>
+          </tr>
+          <tr>
+            <td>🎛️ Pre-Amps A &amp; B ($h_1, h_2$)</td>
+            <td>Hidden Neurons</td>
+            <td>Intermediate feature detectors transforming signals</td>
+          </tr>
+          <tr>
+            <td>🎚️ 6 Mixer Knobs ($k_1 \dots k_6$)</td>
+            <td>Connection Weights ($w_1 \dots w_6$)</td>
+            <td>Tunable parameters that govern signal strength</td>
+          </tr>
+          <tr>
+            <td>🔊 Master Speaker Mismatch</td>
+            <td>Loss Function ($L$)</td>
+            <td>Measurement of prediction error: $\frac{1}{2}(o - t)^2$</td>
+          </tr>
+          <tr>
+            <td>📡 Backward Soundcheck Clues</td>
+            <td>Backpropagation ($\frac{\partial L}{\partial w}$)</td>
+            <td>Assigning error blame backward via the Chain Rule</td>
+          </tr>
+          <tr>
+            <td>⚙️ Calibrate Step / Auto-Tune</td>
+            <td>Gradient Descent ($w \leftarrow w - \eta g$)</td>
+            <td>Optimizer updating weights in direction of lower error</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- MEET THE TINY NETWORK CARD -->
     <div class="setup-card" style="margin-bottom:24px;">
       <span class="edit-tag">System Anatomy</span>
       <h3 class="setup-title">Meet the <span class="accent">Tiny Network</span></h3>
-      <p style="font-size:14.5px;color:var(--muted);margin-bottom:16px;">
-        Now that you've experimented with adjusting connections in the game, here is what was happening behind the scenes:
+      <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">
+        Here is the anatomy of the minimal multi-layer neural network you will encounter across machine learning:
       </p>
       <div class="rules-box" style="margin-bottom:0;">
         <ul>
-          <li><strong>Inputs ($x_1, x_2$):</strong> Two values enter the network and flow forward from left to right.</li>
-          <li><strong>Hidden Layer ($h_1, h_2$):</strong> Intermediate neurons processing signals with activation functions.</li>
-          <li><strong>Weights ($w_1 \dots w_6$):</strong> Six connection strengths that control how strongly information travels.</li>
-          <li><strong>Output ($o$) & Target ($t$):</strong> Network output $o$ is compared against target $t$ to calculate the <strong>Loss</strong> (error).</li>
-          <li><strong>Gradients & Clues:</strong> The clue arrows showed computed gradients—indicating whether each weight should go <strong>up</strong> or <strong>down</strong>.</li>
-          <li><strong>Automated Learning Step:</strong> Automatically adjusted all six weights in unison based on their gradients.</li>
+          <li><strong>Input Neurons ($x_1, x_2$):</strong> Fixed input values. They do not have weights; they pass data forward.</li>
+          <li><strong>Hidden Neurons ($h_1, h_2$):</strong> Compute a weighted sum $z = \sum w_i x_i$, then pass it through a non-linear activation function $\sigma(z) = \frac{1}{1 + e^{-z}}$.</li>
+          <li><strong>Output Neuron ($o$):</strong> Combines hidden signals into a single output prediction $\sigma(w_5 h_1 + w_6 h_2)$.</li>
+          <li><strong>Credit Assignment Problem:</strong> When the output is wrong, how much responsibility belongs to $w_1$ vs $w_5$? Backpropagation calculates this exactly.</li>
         </ul>
       </div>
     </div>
 
-    <!-- DEFINITION & MECHANISM -->
-    <div class="concept-blank">
-      <span class="edit-tag">Core Algorithm</span>
-
-      <h4>What is Backpropagation?</h4>
-      <p><strong>Backpropagation</strong> (short for <em>backward propagation of errors</em>) is the algorithm used to efficiently compute how much each weight connection in a neural network contributed to the overall prediction error (loss).</p>
-
-      <h4>The 5-Step Learning Process</h4>
-      <p>
-        1. <strong>Forward Pass:</strong> Inputs travel forward through layers to compute hidden neuron values and the output.<br>
-        2. <strong>Loss Evaluation:</strong> Measure prediction error between output $o$ and target $t$ using a loss function.<br>
-        3. <strong>Backward Error Propagation:</strong> Propagate the error backward from output to hidden layers using the <strong>chain rule</strong>.<br>
-        4. <strong>Gradient Computation:</strong> Calculate the gradient $\frac{\partial L}{\partial w}$ for every weight connection.<br>
-        5. <strong>Optimizer Update:</strong> An optimizer (e.g. gradient descent) adjusts weights: $w \leftarrow w - \eta \frac{\partial L}{\partial w}$.
+    <!-- INTERACTIVE NEURAL NETWORK SIMULATOR -->
+    <div class="concept-blank" style="margin-bottom:24px;">
+      <span class="edit-tag">Interactive Laboratory</span>
+      <h3 style="font-size:18px;margin-bottom:8px;">Test It On The Network</h3>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:16px;">
+        Now interact with the exact neural network representation. Notice how the same 6 connections behave, and how Backpropagation computes the gradient $\frac{\partial L}{\partial w}$ for every weight connection in one pass:
       </p>
 
-      <h4>Essential Vocabulary</h4>
-      <p>
-        <strong>Loss ($L$):</strong> Measure of how wrong the network prediction is. &nbsp; 
-        <strong>Gradient ($\frac{\partial L}{\partial w}$):</strong> Direction and rate of change of loss per weight. &nbsp; 
-        <strong>Chain Rule:</strong> Calculus rule for computing derivatives through sequential operations. &nbsp; 
-        <strong>Learning Rate ($\eta$):</strong> Controls the size of weight updates.
-      </p>
-    </div>
+      <div class="game-grid">
+        <div class="network-card">
+          <svg id="net-concept" viewBox="0 0 520 320" role="img" aria-label="Neural network showing inputs, hidden neurons, and output neuron"></svg>
+        </div>
 
-    <div class="compare-cards">
-      <div class="compare-card">
-        <span class="compare-title">Without Backpropagation (Trial & Error)</span>
-        <span class="compare-sub">Guess weights randomly or test connections one at a time—impossible for modern networks with billions of parameters.</span>
-      </div>
-      <div class="compare-card">
-        <span class="compare-title">With Backpropagation</span>
-        <span class="compare-sub">Calculates exact error responsibility for all weights simultaneously in a single backward pass.</span>
+        <div class="controls-card">
+          <div class="control-title">Neural Connection Weights</div>
+          <div id="concept-sliders"></div>
+
+          <div class="btn-row" style="justify-content:flex-start;margin-top:12px">
+            <button class="btn-ghost" id="conceptHintBtn">Show Gradients</button>
+            <button class="btn-primary" id="conceptStepBtn">Backprop Step</button>
+            <button class="btn-ghost" id="conceptAutoBtn">Auto-Train</button>
+            <button class="btn-ghost" id="conceptResetBtn">Reset Weights</button>
+          </div>
+
+          <div class="stats" style="margin-top:12px">
+            <span>Output: <b id="concept-o">0</b></span>
+            <span>Target: <b id="concept-t">0</b></span>
+            <span>Loss: <b id="concept-loss">0</b></span>
+          </div>
+          <div class="meter" style="margin-top:8px"><i id="concept-bar"></i></div>
+          <div id="conceptGameStatus" class="status-info" style="margin-top:8px;font-size:11.5px;">Click "Backprop Step" to see all 6 weights updated using computed gradients.</div>
+        </div>
       </div>
     </div>
 
     <!-- MATHEMATICAL FORMULAS -->
     <div class="concept-blank">
       <span class="edit-tag">Under the Hood</span>
-      <h4>What the Game Was Calculating</h4>
-      <p>For the output neuron:</p>
+      <h4>The Mathematics of Backpropagation</h4>
+      <p>1. <strong>Output Neuron Error Signal ($\delta_o$):</strong></p>
       <div class="formula">δo = (o − t) · o(1 − o)</div>
 
-      <p style="margin-top:10px">For a hidden neuron:</p>
+      <p style="margin-top:10px">2. <strong>Hidden Neuron Error Signal via Chain Rule ($\delta_h$):</strong></p>
       <div class="formula">δh = δo · w_output · h(1 − h)</div>
 
-      <p style="margin-top:10px">Gradient calculation and weight update rule:</p>
-      <div class="formula">∂L/∂w = δ · input_val  →  w ← w − η · ∂L/∂w</div>
+      <p style="margin-top:10px">3. <strong>Gradient for Any Weight ($\frac{\partial L}{\partial w}$):</strong></p>
+      <div class="formula">∂L/∂w = δ · (input to connection)</div>
 
-      <p style="margin-top:10px">The direction arrows showed $-\frac{\partial L}{\partial w}$. If negative, increasing the weight reduces loss ($\uparrow$); if positive, decreasing the weight reduces loss ($\downarrow$).</p>
+      <p style="margin-top:10px">4. <strong>Gradient Descent Weight Update Rule:</strong></p>
+      <div class="formula">w ← w − η · (∂L/∂w)</div>
+
+      <p style="margin-top:10px">The direction arrows you saw indicate $-\frac{\partial L}{\partial w}$. If the gradient is negative, increasing the weight reduces loss ($\uparrow$); if positive, decreasing the weight reduces loss ($\downarrow$).</p>
+    </div>
+
+    <div class="compare-cards">
+      <div class="compare-card">
+        <span class="compare-title">Without Backpropagation (Trial &amp; Error)</span>
+        <span class="compare-sub">Tweaking one weight at a time requires re-running the entire network thousands of times—computationally impossible for real networks with billions of weights.</span>
+      </div>
+      <div class="compare-card">
+        <span class="compare-title">With Backpropagation (Analytical Chain Rule)</span>
+        <span class="compare-sub">Computes the exact gradient for all millions of weights simultaneously in a single backward sweep from output to input.</span>
+      </div>
     </div>
 
     <div class="guide-note">
-      <span class="guide-kicker">Important Distinction</span>
+      <span class="guide-kicker">Key Takeaway</span>
       <p><strong>Backpropagation computes gradients;</strong> an optimizer (such as Gradient Descent) uses those gradients to change the weights. They work together, but they perform distinct roles.</p>
     </div>
 
@@ -310,30 +410,61 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
   </div>
 </section>
 
-<!-- PART 4: EXERCISE -->
+<!-- ================= PART 4: EXERCISE ================= -->
 <section class="screen" id="screen-exercise">
   <div class="container">
     <span class="eyebrow">Part 4 — Exercise</span>
-    <h2 class="screen-title">Apply what you discovered</h2>
-    <div class="guide-note" style="max-width:760px;margin-left:auto;margin-right:auto">
-      <p>Explain your reasoning in your own words. The goal is conceptual understanding, not memorising definitions.</p>
+    <h2 class="screen-title">Apply What You Discovered</h2>
+    <div class="guide-note" style="max-width:780px;margin-left:auto;margin-right:auto">
+      <p>Explain your reasoning in your own words. The goal is deep conceptual intuition, not memorizing equations.</p>
     </div>
 
     <div class="questions-grid">
-      <div class="q-card"><div class="q-card-head"><div class="q-num">01</div><div class="q-note">A network's prediction is too high. Explain how the sign of a gradient ($\frac{\partial L}{\partial w}$) helps decide whether a particular weight should increase or decrease.</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">02</div><div class="q-note">Why is computing gradients for all weights in one backward pass far more practical than changing weights one at a time by trial and error?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">03</div><div class="q-note">What role does the chain rule play when an early-layer weight affects the final loss through multiple intermediate neurons?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">04</div><div class="q-note">What could happen if the learning rate ($\eta$) is set extremely large? What could happen if it is set extremely small?</div></div></div>
-      <div class="q-card"><div class="q-card-head"><div class="q-num">05</div><div class="q-note">In networks with many layers, why might gradients become very small as they propagate backward (the vanishing gradient problem)?</div></div></div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">01</div>
+          <div class="q-note">A network's output is too high compared to its target. Explain why the sign of the gradient ($\frac{\partial L}{\partial w}$) tells us whether a particular connection weight should increase or decrease.</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">02</div>
+          <div class="q-note">Why is calculating gradients in one backward pass far more practical than tweaking weights one at a time and testing the outcome?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">03</div>
+          <div class="q-note">What role does the chain rule play when an early-layer weight affects the final loss through several intermediate neurons?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">04</div>
+          <div class="q-note">What could happen if the learning rate ($\eta$) is set extremely large? What could happen if it is set extremely small?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">05</div>
+          <div class="q-note">In networks with many layers, why might gradients become very small as they propagate backward (the vanishing gradient problem)?</div>
+        </div>
+      </div>
+      <div class="q-card">
+        <div class="q-card-head">
+          <div class="q-num">06</div>
+          <div class="q-note">In modern neural networks with billions of parameters (like ChatGPT), how does this exact same credit-assignment process scale up?</div>
+        </div>
+      </div>
     </div>
 
     <div class="guide-note">
       <span class="guide-kicker">Real-World Transfer</span>
-      <p>In modern neural networks with millions of parameters, the exact same principle applies: a forward pass calculates predictions and loss, followed by backpropagation to calculate gradients for every single connection weight.</p>
+      <p>Whether in a 6-parameter toy network or a 500-billion-parameter language model, the principle is identical: forward pass to calculate predictions and loss, followed by backward propagation of errors to tell every parameter how to improve.</p>
     </div>
 
-    <div class="btn-row" style="margin-top:8px">
-      <button class="btn-ghost" id="go-home-btn">🏠 Play Game (Part 1)</button>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-ghost" id="go-home-btn">🏠 Play Audio Mixer (Part 1)</button>
       <button class="btn-primary" id="restart-journey">Restart the Whole Journey</button>
     </div>
   </div>
@@ -343,7 +474,7 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
 <div class="modal-backdrop" id="modal-back-warn">
   <div class="modal-card">
     <div class="modal-eyebrow">Wait —</div>
-    <p>Going back will move you to the previous stage. Your game state may not be preserved as you expect.</p>
+    <p>Going back will move you to the previous stage. Your adjustments may reset.</p>
     <p style="font-weight:600;color:var(--ink)">Are you sure you want to go back?</p>
     <div class="btn-row" style="margin-top:20px">
       <button class="btn-ghost" id="back-cancel">Stay Here</button>
@@ -352,15 +483,13 @@ font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase;pad
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
 (function(){
 "use strict";
 
 /* ---------- Four-part template navigation ---------- */
 const PAGES=[
-  "screen-game","screen-reflect","screen-concept","screen-exercise"
+  "screen-audio","screen-reflect","screen-concept","screen-exercise"
 ];
 const PAGE_LABELS=["Play","Reflect","Concept","Exercise"];
 let currentPage=0,unlockedPage=0;
@@ -392,131 +521,136 @@ function showPage(idx){
   window.scrollTo({top:0,behavior:"auto"});
 }
 
-/* ---------- Backpropagation game ---------- */
+/* ==========================================================
+   PART 1: THE SOUNDBOARD GAME (INTUITIVE GAMEPLAY)
+   ========================================================== */
 const sig=z=>1/(1+Math.exp(-z));
-const LV=[
+const AUDIO_LV=[
   {
-    n:"Level 1 · Raise it",
-    short:"Raise the output",
-    tip:"The output starts too low. Learn how the final connections help raise it. One connection alone cannot reach the target — the network has to share the job.",
+    n:"Level 1 · Boost Volume",
+    short:"Raise the master speaker volume",
+    tip:"The sound is too quiet. Discover how the master channel knobs boost the mix. Notice that one knob alone cannot solve the level—the channels must share the load.",
     x:[.5,.8],t:.75,w:[.5,.2,-.3,.4,0,0]
   },
   {
-    n:"Level 2 · Lower it",
-    short:"Lower the output",
-    tip:"The output starts too high. Learn how the final connections help lower it. One connection alone cannot reach the target — the network has to share the job.",
+    n:"Level 2 · Cut Distortion",
+    short:"Lower the master speaker volume",
+    tip:"The speaker is blaring and distorted. Learn how to pull back master and pre-amp channels to reach the sweet spot.",
     x:[.7,.3],t:.25,w:[.4,-.2,.5,.1,0,0]
   },
   {
-    n:"Level 3 · Challenge",
-    short:"Use all the connections",
-    tip:"Now the hidden connections matter too. Use the clues to discover how a small change earlier in the network can affect the final answer.",
+    n:"Level 3 · Full Stage Mix",
+    short:"Balance all mixing channels",
+    tip:"Both instruments and pre-amps are active. Use the soundcheck clues to discover how adjusting an early instrument feed affects the master speaker.",
     x:[.8,.4],t:.72,w:[.3,-.6,-.4,.8,.4,.5]
   }
 ];
-const NAMES=["w1","w2","w3","w4","w5","w6"];
-const CONNECTIONS=["x1 → h1","x2 → h1","x1 → h2","x2 → h2","h1 → o","h2 → o"];
-let completed=[false,false,false];
-let L=0,w=[],moves=0,peeks=0,hint=false,done=false,autoTimer=null;
+
+const AUDIO_KNOB_NAMES=["k1","k2","k3","k4","k5","k6"];
+const AUDIO_LABELS=[
+  "Vocals → Pre-Amp A",
+  "Synth → Pre-Amp A",
+  "Vocals → Pre-Amp B",
+  "Synth → Pre-Amp B",
+  "Pre-Amp A → Master",
+  "Pre-Amp B → Master"
+];
+
+let audioCompleted=[false,false,false];
+let audioL=0,audioW=[],audioMoves=0,audioPeeks=0,audioHint=false,audioDone=false,audioAutoTimer=null;
 
 const f=v=>v.toFixed(3);
 
-function fwd(){
-  const x=LV[L].x;
-  const h1=sig(w[0]*x[0]+w[1]*x[1]);
-  const h2=sig(w[2]*x[0]+w[3]*x[1]);
-  const o=sig(w[4]*h1+w[5]*h2);
+function audioFwd(){
+  const x=AUDIO_LV[audioL].x;
+  const h1=sig(audioW[0]*x[0]+audioW[1]*x[1]);
+  const h2=sig(audioW[2]*x[0]+audioW[3]*x[1]);
+  const o=sig(audioW[4]*h1+audioW[5]*h2);
   return {h1,h2,o};
 }
 
-function grad(){
-  const x=LV[L].x,t=LV[L].t,{h1,h2,o}=fwd();
+function audioGrad(){
+  const x=AUDIO_LV[audioL].x,t=AUDIO_LV[audioL].t,{h1,h2,o}=audioFwd();
   const d=(o-t)*o*(1-o);
-  const a=d*w[4]*h1*(1-h1);
-  const b=d*w[5]*h2*(1-h2);
+  const a=d*audioW[4]*h1*(1-h1);
+  const b=d*audioW[5]*h2*(1-h2);
   return [a*x[0],a*x[1],b*x[0],b*x[1],d*h1,d*h2];
 }
 
-function build(){
-  $("lvls").innerHTML=LV.map((l,i)=>{
-    const locked=i>0 && !completed[i-1];
-    return `<button class="level-btn ${i===L?"active":""}" data-l="${i}" ${locked?"disabled":""}>
-      ${l.n}${completed[i]?" ✓":""}
+function audioBuild(){
+  $("audio-lvls").innerHTML=AUDIO_LV.map((l,i)=>{
+    const locked=i>0 && !audioCompleted[i-1];
+    return `<button class="level-btn ${i===audioL?"active":""}" data-l="${i}" ${locked?"disabled":""}>
+      ${l.n}${audioCompleted[i]?" ✓":""}
     </button>`;
   }).join("");
 
-  $("sliders").innerHTML=NAMES.map((n,i)=>
+  $("audio-sliders").innerHTML=AUDIO_KNOB_NAMES.map((n,i)=>
     `<div class="slider-row">
       <div class="weight-label">
         <b>${n}</b>
-        <small>${CONNECTIONS[i]}</small>
+        <small>${AUDIO_LABELS[i]}</small>
       </div>
-      <input type="range" id="s${i}" min="-1.2" max="1.2" step="0.05" aria-label="${n}, ${CONNECTIONS[i]}">
+      <input type="range" id="as${i}" min="-1.2" max="1.2" step="0.05" aria-label="${n}, ${AUDIO_LABELS[i]}">
       <div class="weight-readout">
-        <span class="weight-value" id="v${i}"></span>
-        <span class="weight-clue" id="g${i}"></span>
+        <span class="weight-value" id="av${i}"></span>
+        <span class="weight-clue" id="ag${i}"></span>
       </div>
     </div>`
   ).join("");
 
-  NAMES.forEach((n,i)=>{
-    $("s"+i).addEventListener("input",e=>{
-      if(done)return;
-      stopAuto();
-      w[i]=+e.target.value;
-      update();
+  AUDIO_KNOB_NAMES.forEach((n,i)=>{
+    $("as"+i).addEventListener("input",e=>{
+      if(audioDone)return;
+      audioStopAuto();
+      audioW[i]=+e.target.value;
+      audioUpdate();
     });
 
-    $("s"+i).addEventListener("change",e=>{
-      if(done)return;
-      moves++;
-      update();
+    $("as"+i).addEventListener("change",e=>{
+      if(audioDone)return;
+      audioMoves++;
+      audioUpdate();
     });
   });
 }
-function reset(){
-  stopAuto();
-  w=[...LV[L].w];
-  moves=0;
-  peeks=0;
-  hint=false;
-  done=false;
-  build();
-  $("msg").textContent="";
-  $("gameStatus").className="status-info";
-  $("gameStatus").innerHTML=`<b>${LV[L].short}.</b> ${LV[L].tip}`;
-  update();
+
+function audioReset(){
+  audioStopAuto();
+  audioW=[...AUDIO_LV[audioL].w];
+  audioMoves=0;
+  audioPeeks=0;
+  audioHint=false;
+  audioDone=false;
+  audioBuild();
+  $("audio-msg").textContent="";
+  $("audioGameStatus").className="status-info";
+  $("audioGameStatus").innerHTML=`<b>${AUDIO_LV[audioL].short}.</b> ${AUDIO_LV[audioL].tip}`;
+  audioUpdate();
 }
-function update(){
-  const x=LV[L].x,t=LV[L].t,{h1,h2,o}=fwd();
-  const loss=.5*(o-t)**2,g=grad();
 
-  NAMES.forEach((n,i)=>{
-    $("s"+i).value=w[i];
+function audioUpdate(){
+  const x=AUDIO_LV[audioL].x,t=AUDIO_LV[audioL].t,{h1,h2,o}=audioFwd();
+  const loss=.5*(o-t)**2,g=audioGrad();
 
-    const valueEl=$("v"+i);
-    const clueEl=$("g"+i);
-    valueEl.textContent=(w[i]>=0?"+":"")+w[i].toFixed(2);
+  AUDIO_KNOB_NAMES.forEach((n,i)=>{
+    $("as"+i).value=audioW[i];
+    const valueEl=$("av"+i);
+    const clueEl=$("ag"+i);
+    valueEl.textContent=(audioW[i]>=0?"+":"")+audioW[i].toFixed(2);
 
-    if(hint){
-      const atMax=w[i]>=2.95;
-      const atMin=w[i]<=-2.95;
+    if(audioHint){
       let clue,cls;
-
-      if((g[i]<0 && atMax) || (g[i]>0 && atMin)){
-        clue="• this one is already at its limit";
-        cls="hint-stuck";
-      }else if(g[i]<0){
-        clue="↑ increase weight";
+      if(g[i]<0){
+        clue="↑ turn up / boost";
         cls="hint-up";
       }else if(g[i]>0){
-        clue="↓ decrease weight";
+        clue="↓ pull back / cut";
         cls="hint-down";
       }else{
-        clue="• no change needed";
+        clue="• optimal";
         cls="hint-stuck";
       }
-
       clueEl.className="weight-clue "+cls;
       clueEl.textContent=clue;
     }else{
@@ -525,68 +659,232 @@ function update(){
     }
   });
 
-  $("o").textContent=f(o);
-  $("t").textContent=t;
-  $("loss").textContent=f(loss);
-  $("moves").textContent=moves;
-  $("peeks").textContent=peeks;
+  $("audio-o").textContent=f(o);
+  $("audio-t").textContent=t;
+  $("audio-loss").textContent=f(loss);
+  $("audio-moves").textContent=audioMoves;
+  $("audio-peeks").textContent=audioPeeks;
 
-  const sc=Math.max(0,100-peeks*5-Math.max(0,moves-10));
-  $("score").textContent=sc;
+  const sc=Math.max(0,100-audioPeeks*5-Math.max(0,audioMoves-10));
+  $("audio-score").textContent=sc;
 
-  $("bar").style.width=Math.min(100,loss/.08*100)+"%";
-  $("bar").style.background=done?"var(--success-border)":"var(--danger)";
-  draw(x,{h1,h2,o},g);
+  $("audio-bar").style.width=Math.min(100,loss/.08*100)+"%";
+  $("audio-bar").style.background=audioDone?"var(--success-border)":"var(--danger)";
+  audioDraw(x,{h1,h2,o},g);
 
-  if(!done && Math.abs(o-t)<.03){
-    done=true;
-    completed[L]=true;
-    stopAuto();
-    $("msg").textContent=`Level complete! Score ${sc}.`;
-    $("gameStatus").className="status-ok";
+  if(!audioDone && Math.abs(o-t)<.03){
+    audioDone=true;
+    audioCompleted[audioL]=true;
+    audioStopAuto();
+    $("audio-msg").textContent=`Mix balanced! Level complete with score ${sc}.`;
+    $("audioGameStatus").className="status-ok";
 
-    if(L<LV.length-1){
-      $("gameStatus").textContent=`Great! You learned this move. Level ${L+2} is now unlocked.`;
-      build();
-      update();
+    if(audioL<AUDIO_LV.length-1){
+      $("audioGameStatus").textContent=`Great ears! Level ${audioL+2} is now unlocked.`;
+      audioBuild();
+      audioUpdate();
     }else{
-      $("gameStatus").textContent="Amazing! You completed all three levels.";
-      build();
-      update();
+      $("audioGameStatus").textContent="Concert-ready! You balanced all three mixing levels.";
+      audioBuild();
+      audioUpdate();
     }
-  }else if(!done){
-    $("msg").textContent=o<t
-      ?"The output is too low. Your goal is to move it up."
-      :"The output is too high. Your goal is to move it down.";
+  }else if(!audioDone){
+    $("audio-msg").textContent=o<t
+      ?"Sound is too quiet. Turn up the signal!"
+      :"Sound is too loud / distorted. Pull back the signal!";
 
-    $("gameStatus").className="status-info";
-    $("gameStatus").innerHTML=hint
-      ?"<b>Follow the clues:</b> the arrow tells you whether that weight should increase or decrease."
-      :`<b>${LV[L].short}.</b> ${LV[L].tip}`;
+    $("audioGameStatus").className="status-info";
+    $("audioGameStatus").innerHTML=audioHint
+      ?"<b>Follow the soundcheck arrows:</b> boost (↑) or cut (↓) each channel as indicated."
+      :`<b>${AUDIO_LV[audioL].short}.</b> ${AUDIO_LV[audioL].tip}`;
   }
 }
-function oNear(o,t){
-  if(Math.abs(o-t)<.03) return "on target!";
-  return o<t ? "output is low — move it up" : "output is high — move it down";
+
+function audioNearText(o,t){
+  if(Math.abs(o-t)<.03) return "✓ balanced mix!";
+  return o<t ? "volume is low — boost" : "volume is high — pull back";
 }
 
-function draw(x,a,g){
-  const P={x1:[60,100],x2:[60,220],h1:[260,100],h2:[260,220],o:[450,160]};
+function audioDraw(x,a,g){
+  const P={x1:[65,100],x2:[65,220],h1:[260,100],h2:[260,220],o:[450,160]};
   const E=[["x1","h1",0],["x2","h1",1],["x1","h2",2],["x2","h2",3],["h1","o",4],["h2","o",5]];
   let s="";
   E.forEach(([p,q,i])=>{
-    const A=P[p],B=P[q],v=w[i];
+    const A=P[p],B=P[q],v=audioW[i];
     const c=v>=0?"#4A9BD1":"#EA8C36";
-    s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c}" stroke-width="${1+Math.abs(v)*2.2}" opacity=".75"/>`;
+    s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c}" stroke-width="${1.2+Math.abs(v)*2.2}" opacity=".75"/>`;
     const mx=A[0]*.35+B[0]*.65,my=A[1]*.35+B[1]*.65;
-    s+=`<text x="${mx}" y="${my-6}" font-size="12" text-anchor="middle" fill="#1F2E37" stroke="#fff" stroke-width="3" paint-order="stroke">${NAMES[i]}=${v.toFixed(2)}</text>`;
-    if(hint){
+    s+=`<text x="${mx}" y="${my-6}" font-size="11" font-weight="600" text-anchor="middle" fill="#1F2E37" stroke="#fff" stroke-width="3" paint-order="stroke">${AUDIO_KNOB_NAMES[i]}=${v.toFixed(2)}</text>`;
+    if(audioHint){
       const gc=g[i]<0?"#2B6FA3":g[i]>0?"#C96F1F":"#54666D";
-      const atMax=w[i]>=2.95, atMin=w[i]<=-2.95;
-      const label=((g[i]<0&&atMax)||(g[i]>0&&atMin))
-        ?"try another"
-        :(g[i]<0?"increase weight":g[i]>0?"decrease weight":"no change");
-      s+=`<text x="${mx}" y="${my+12}" font-size="11" font-weight="700" text-anchor="middle" fill="${gc}" stroke="#fff" stroke-width="3" paint-order="stroke">${label}</text>`;
+      const label=g[i]<0?"boost ↑":g[i]>0?"cut ↓":"balanced";
+      s+=`<text x="${mx}" y="${my+12}" font-size="10.5" font-weight="700" text-anchor="middle" fill="${gc}" stroke="#fff" stroke-width="3" paint-order="stroke">${label}</text>`;
+    }
+  });
+
+  const N=(k,lab,sub,val,icon)=>{
+    const [X,Y]=P[k];
+    return `<circle cx="${X}" cy="${Y}" r="32" fill="#fff" stroke="#1F2E37" stroke-width="2"/>
+      <text x="${X}" y="${Y-12}" text-anchor="middle" font-size="14">${icon}</text>
+      <text x="${X}" y="${Y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#1F2E37">${lab}</text>
+      <text x="${X}" y="${Y+18}" text-anchor="middle" font-size="10.5" fill="#54666D">${val}</text>`;
+  };
+
+  s+=N("x1","Vocals","In 1",x[0],"🎤")+
+     N("x2","Synth","In 2",x[1],"🎹")+
+     N("h1","Pre-Amp A","Ch A",a.h1.toFixed(2),"🎛️")+
+     N("h2","Pre-Amp B","Ch B",a.h2.toFixed(2),"🎛️")+
+     N("o","Speaker","Out",a.o.toFixed(2),"🔊");
+
+  s+=`<text x="450" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#4B7A4A">Target ${AUDIO_LV[audioL].t}</text>`;
+  s+=`<text x="450" y="230" text-anchor="middle" font-size="10.5" fill="#54666D">${audioNearText(a.o,AUDIO_LV[audioL].t)}</text>`;
+  s+=`<text x="12" y="308" font-size="11" fill="#54666D">Blue cable = boost (+) · Orange cable = cut (−) · Thicker = higher gain</text>`;
+  $("audio-net").innerHTML=s;
+}
+
+function audioStep(eta=2.5){
+  if(audioDone)return false;
+  const before=audioFwd().o;
+  const g=audioGrad();
+  audioW=audioW.map((v,i)=>Math.max(-3,Math.min(3,v-eta*g[i])));
+  audioMoves++;
+  audioHint=true;
+  audioUpdate();
+  if(!audioDone){
+    const after=audioFwd().o;
+    $("audioGameStatus").innerHTML=`<b>Calibrated step:</b> Speaker output moved from ${before.toFixed(2)} to ${after.toFixed(2)}.`;
+  }
+  return audioDone;
+}
+
+function audioStopAuto(){
+  if(audioAutoTimer){
+    clearInterval(audioAutoTimer);
+    audioAutoTimer=null;
+  }
+  $("audioAutoBtn").textContent="Auto-Calibrate";
+}
+
+function audioStartAuto(){
+  if(audioDone)return;
+  if(audioAutoTimer){
+    audioStopAuto();
+    return;
+  }
+  $("audioAutoBtn").textContent="Pause Calibration";
+  audioAutoTimer=setInterval(()=>{
+    if(audioDone){
+      audioStopAuto();
+      return;
+    }
+    const finished=audioStep(3.2);
+    if(finished) audioStopAuto();
+  },500);
+}
+
+$("audioHintBtn").onclick=()=>{
+  if(audioDone)return;
+  if(!audioHint) audioPeeks++;
+  audioHint=!audioHint;
+  audioUpdate();
+};
+$("audioStepBtn").onclick=()=>{
+  audioStopAuto();
+  audioStep();
+};
+$("audioAutoBtn").onclick=audioStartAuto;
+$("audioResetBtn").onclick=audioReset;
+
+$("audio-lvls").onclick=e=>{
+  const b=e.target.closest("[data-l]");
+  if(!b || b.disabled)return;
+  audioL=+b.dataset.l;
+  audioReset();
+};
+
+/* ==========================================================
+   PART 3: NEURAL NETWORK INTERACTIVE SIMULATOR (IN CONCEPT)
+   ========================================================== */
+const NN_NAMES=["w1","w2","w3","w4","w5","w6"];
+const NN_CONNS=["x1 → h1","x2 → h1","x1 → h2","x2 → h2","h1 → o","h2 → o"];
+let nnW=[.3,-.6,-.4,.8,.4,.5],nnX=[.8,.4],nnT=.72;
+let nnHint=false,nnAutoTimer=null;
+
+function nnFwd(){
+  const h1=sig(nnW[0]*nnX[0]+nnW[1]*nnX[1]);
+  const h2=sig(nnW[2]*nnX[0]+nnW[3]*nnX[1]);
+  const o=sig(nnW[4]*h1+nnW[5]*h2);
+  return {h1,h2,o};
+}
+
+function nnGrad(){
+  const {h1,h2,o}=nnFwd();
+  const d=(o-nnT)*o*(1-o);
+  const a=d*nnW[4]*h1*(1-h1);
+  const b=d*nnW[5]*h2*(1-h2);
+  return [a*nnX[0],a*nnX[1],b*nnX[0],b*nnX[1],d*h1,d*h2];
+}
+
+function nnBuild(){
+  $("concept-sliders").innerHTML=NN_NAMES.map((n,i)=>
+    `<div class="slider-row" style="margin:5px 0;padding:4px 6px;">
+      <div class="weight-label"><b>${n}</b><small>${NN_CONNS[i]}</small></div>
+      <input type="range" id="cs${i}" min="-1.5" max="1.5" step="0.05" value="${nnW[i]}">
+      <div class="weight-readout">
+        <span class="weight-value" id="cv${i}"></span>
+        <span class="weight-clue" id="cg${i}"></span>
+      </div>
+    </div>`
+  ).join("");
+
+  NN_NAMES.forEach((n,i)=>{
+    $("cs"+i).addEventListener("input",e=>{
+      nnStopAuto();
+      nnW[i]=+e.target.value;
+      nnUpdate();
+    });
+  });
+}
+
+function nnUpdate(){
+  const {h1,h2,o}=nnFwd();
+  const loss=.5*(o-nnT)**2,g=nnGrad();
+
+  NN_NAMES.forEach((n,i)=>{
+    $("cs"+i).value=nnW[i];
+    $("cv"+i).textContent=(nnW[i]>=0?"+":"")+nnW[i].toFixed(2);
+    const clueEl=$("cg"+i);
+    if(nnHint){
+      clueEl.className="weight-clue "+(g[i]<0?"hint-up":"hint-down");
+      clueEl.textContent=g[i]<0?"↑ ∂L/∂w<0":"↓ ∂L/∂w>0";
+    }else{
+      clueEl.className="weight-clue";
+      clueEl.textContent="";
+    }
+  });
+
+  $("concept-o").textContent=f(o);
+  $("concept-t").textContent=nnT;
+  $("concept-loss").textContent=f(loss);
+  $("concept-bar").style.width=Math.min(100,loss/.08*100)+"%";
+  $("concept-bar").style.background=Math.abs(o-nnT)<.03?"var(--success-border)":"var(--teal)";
+
+  nnDraw(nnX,{h1,h2,o},g);
+}
+
+function nnDraw(x,a,g){
+  const P={x1:[65,95],x2:[65,225],h1:[260,95],h2:[260,225],o:[450,160]};
+  const E=[["x1","h1",0],["x2","h1",1],["x1","h2",2],["x2","h2",3],["h1","o",4],["h2","o",5]];
+  let s="";
+  E.forEach(([p,q,i])=>{
+    const A=P[p],B=P[q],v=nnW[i];
+    const c=v>=0?"#4A9BD1":"#EA8C36";
+    s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c}" stroke-width="${1+Math.abs(v)*2}" opacity=".75"/>`;
+    const mx=A[0]*.35+B[0]*.65,my=A[1]*.35+B[1]*.65;
+    s+=`<text x="${mx}" y="${my-5}" font-size="11" text-anchor="middle" fill="#1F2E37" stroke="#fff" stroke-width="3" paint-order="stroke">${NN_NAMES[i]}=${v.toFixed(2)}</text>`;
+    if(nnHint){
+      const gc=g[i]<0?"#2B6FA3":"#C96F1F";
+      s+=`<text x="${mx}" y="${my+11}" font-size="10" font-weight="700" text-anchor="middle" fill="${gc}" stroke="#fff" stroke-width="3" paint-order="stroke">${g[i]<0?"increase":"decrease"}</text>`;
     }
   });
 
@@ -598,104 +896,77 @@ function draw(x,a,g){
   };
 
   s+=N("x1","x1",x[0])+N("x2","x2",x[1])+N("h1","h1",a.h1.toFixed(2))+N("h2","h2",a.h2.toFixed(2))+N("o","o",a.o.toFixed(2));
-  s+=`<text x="450" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#4B7A4A">target ${LV[L].t}</text>`;
-  s+=`<text x="450" y="232" text-anchor="middle" font-size="11" fill="#54666D">${oNear(a.o,LV[L].t)}</text>`;
-  s+=`<text x="10" y="310" font-size="12" fill="#54666D">Blue = adds · orange = subtracts · thicker = stronger connection</text>`;
-  $("net").innerHTML=s;
+  s+=`<text x="450" y="210" text-anchor="middle" font-size="12" font-weight="700" fill="#4B7A4A">target ${nnT}</text>`;
+  $("net-concept").innerHTML=s;
 }
 
-function backpropStep(eta=2.5){
-  if(done)return false;
+function nnStep(eta=2.6){
+  const g=nnGrad();
+  nnW=nnW.map((v,i)=>Math.max(-3,Math.min(3,v-eta*g[i])));
+  nnHint=true;
+  nnUpdate();
+}
 
-  const before=fwd().o;
-  const g=grad();
-  w=w.map((v,i)=>Math.max(-3,Math.min(3,v-eta*g[i])));
-  moves++;
-  hint=true;
-  update();
-
-  if(!done){
-    const after=fwd().o;
-    $("gameStatus").innerHTML=after===before
-      ? "<b>Watch closely:</b> this step was very small. Try the next one."
-      : `<b>Learning step:</b> output moved from ${before.toFixed(2)} to ${after.toFixed(2)}.`;
+function nnStopAuto(){
+  if(nnAutoTimer){
+    clearInterval(nnAutoTimer);
+    nnAutoTimer=null;
   }
-
-  return done;
+  $("conceptAutoBtn").textContent="Auto-Train";
 }
 
-function stopAuto(){
-  if(autoTimer){
-    clearInterval(autoTimer);
-    autoTimer=null;
-  }
-  $("autoBtn").textContent="Auto-play";
-}
-
-function startAuto(){
-  if(done)return;
-
-  if(autoTimer){
-    stopAuto();
+function nnStartAuto(){
+  if(nnAutoTimer){
+    nnStopAuto();
     return;
   }
-
-  $("autoBtn").textContent="Pause auto-play";
-
-  const AUTO_ETA=3.5;
-  const AUTO_DELAY=500;
-
-  autoTimer=setInterval(()=>{
-    if(done){
-      stopAuto();
+  $("conceptAutoBtn").textContent="Pause Training";
+  nnAutoTimer=setInterval(()=>{
+    const {o}=nnFwd();
+    if(Math.abs(o-nnT)<.03){
+      nnStopAuto();
       return;
     }
-
-    const finished=backpropStep(AUTO_ETA);
-
-    if(finished){
-      stopAuto();
-    }
-  },AUTO_DELAY);
+    nnStep(3.0);
+  },450);
 }
 
-$("hintBtn").onclick=()=>{
-  if(done)return;
-  if(!hint)peeks++;
-  hint=!hint;
-  update();
+$("conceptHintBtn").onclick=()=>{
+  nnHint=!nnHint;
+  nnUpdate();
+};
+$("conceptStepBtn").onclick=()=>{
+  nnStopAuto();
+  nnStep();
+};
+$("conceptAutoBtn").onclick=nnStartAuto;
+$("conceptResetBtn").onclick=()=>{
+  nnStopAuto();
+  nnW=[.3,-.6,-.4,.8,.4,.5];
+  nnHint=false;
+  nnBuild();
+  nnUpdate();
 };
 
-$("stepBtn").onclick=()=>{
-  stopAuto();
-  backpropStep();
+/* ==========================================================
+   NAVIGATION
+   ========================================================== */
+$("audio-next").onclick=()=>showPage(1);
+$("to-concept").onclick=()=>{
+  showPage(2);
+  nnBuild();
+  nnUpdate();
 };
-
-$("autoBtn").onclick=startAuto;
-$("resetBtn").onclick=reset;
-
-$("lvls").onclick=e=>{
-  const b=e.target.closest("[data-l]");
-  if(!b || b.disabled)return;
-
-  const next=+b.dataset.l;
-  L=next;
-  reset();
-};
-
-/* ---------- Navigation ---------- */
-$("demo-next").onclick=()=>showPage(1);
-$("to-concept").onclick=()=>showPage(2);
 $("to-exercise").onclick=()=>showPage(3);
 
 $("restart-journey").onclick=()=>{
-  reset();
+  audioReset();
   unlockedPage=0;
   showPage(0);
 };
 
 $("go-home-btn").onclick=()=>{
-  reset();
+  audioReset();
   unlockedPage=0;
   showPage(0);
 };
@@ -707,7 +978,6 @@ $("back-btn").onclick=()=>{
 };
 
 $("back-cancel").onclick=()=>$("modal-back-warn").classList.remove("show");
-
 $("back-confirm").onclick=()=>{
   $("modal-back-warn").classList.remove("show");
   const target=currentPage-1;
@@ -715,9 +985,12 @@ $("back-confirm").onclick=()=>{
   showPage(target);
 };
 
+/* Initialize */
 renderProgress();
 $("back-btn").disabled=true;
-reset();
+audioReset();
+nnBuild();
+nnUpdate();
 
 })();
 </script>
